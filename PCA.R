@@ -1,5 +1,3 @@
-# pca_analysis.R
-
 # Function to install and load required packages
 install_and_load <- function(packages) {
   for (pkg in packages) {
@@ -11,7 +9,7 @@ install_and_load <- function(packages) {
 }
 
 # List of required packages
-required_packages <- c("dplyr", "tidyr", "readxl", "ggplot2", "ggrepel", "rgl", "htmlwidgets")
+required_packages <- c("dplyr", "tidyr", "readxl", "ggplot2", "ggrepel", "rgl", "htmlwidgets", "rmarkdown")
 
 # Install and load required packages
 install_and_load(required_packages)
@@ -24,8 +22,14 @@ library(ggplot2)
 library(ggrepel)
 library(rgl)
 library(htmlwidgets)
+library(rmarkdown)
 
 cat("PCA Analysis: Start\n")
+
+# Ensure rgl uses a virtual framebuffer
+if (Sys.getenv("DISPLAY") == "") {
+  Sys.setenv("DISPLAY" = ":99")
+}
 
 # Function to read file based on type
 read_file <- function(file_path, sheet_name = NULL) {
@@ -114,14 +118,7 @@ plot3d(pc_scores[, 1], pc_scores[, 2], pc_scores[, 3],
        xlab = "PC1", ylab = "PC2", zlab = "PC3",
        main = "PCA Plot in 3D")
 
-
-
-
 cat("PCA plot is done")
 
-# Display the 3D plot in R session
-rglwidget()  # Interactive plot window
-while (TRUE) {
-  Sys.sleep(60)  # Check every minute if the window is still open
-}
-
+# Create an R Markdown document to hold the interactive plot
+rmarkdown::render("pca_analysis.Rmd", output_file = file.path(output_path, "pca_plot.html"))

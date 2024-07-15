@@ -1,8 +1,8 @@
 meta_file_path=D:/data/TargettedData/test/metadata.csv
 file_path=D:/data/TargettedData/test/input.xlsx
-sheet=toto17
+sheet=toto
 output_path=D:/data/TargettedData/test
-method=ANOVA
-column=condition
+method=PCA
+column=class
 label_column=
-conditions=T,H
+conditions=QC,sample
