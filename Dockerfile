@@ -17,6 +17,7 @@ RUN apt-get update && apt-get install -y \
     dos2unix \
     mesa-utils \
     pandoc \
+    x11-apps \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -33,6 +34,9 @@ COPY . .
 # Convert line endings and set executable permissions
 RUN dos2unix StatChill.sh GUI.py PLS-Da.py Volcano.R testing.py PCA.R batchCorrecting.R
 RUN chmod +x StatChill.sh GUI.py PLS-Da.py Volcano.R testing.py PCA.R batchCorrecting.R
+
+# Copy PCA analysis Rmd file to the appropriate directory
+COPY pca_analysis.Rmd /app/test/pca_analysis.Rmd
 
 # Setup X11 forwarding
 ENV DISPLAY=:0
