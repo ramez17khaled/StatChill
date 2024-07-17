@@ -1,9 +1,23 @@
+import importlib.util
+import subprocess
+import sys
+
+# List of required libraries
+required_libraries = ['pandas', 'scipy', 'seaborn', 'matplotlib', 'statsmodels']
+
+# Check if each library is installed
+for lib in required_libraries:
+    spec = importlib.util.find_spec(lib)
+    if spec is None:
+        print(f"{lib} is not installed. Installing...")
+        subprocess.check_call([sys.executable, "-m", "pip", "install", lib])
+
+# Now import the required libraries
 import pandas as pd
 import scipy.stats as stats
 import seaborn as sns
 import matplotlib.pyplot as plt
-import sys
-import numpy as np
+from statsmodels.stats.multicomp import pairwise_tukeyhsd
 
 def main(meta_file_path, file_path, sheet, output_path, column, conditions, hue_column):
     # Load the MetaData
@@ -40,6 +54,12 @@ def main(meta_file_path, file_path, sheet, output_path, column, conditions, hue_
     print("Main data loaded successfully:")
     print(ThermoData.head())
 
+    # Ensure all data columns are numeric and handle non-numeric values
+    ThermoData = ThermoData.apply(pd.to_numeric, errors='coerce')
+    
+    # Fill or drop NaN values
+    ThermoData = ThermoData.fillna(0)  # Fill NaNs with 0, or use .dropna() to remove rows/columns with NaNs
+    
     # Check if the column exists in the metadata
     if column not in meta_data.columns:
         print("Available columns in metadata:", meta_data.columns)
@@ -55,16 +75,22 @@ def main(meta_file_path, file_path, sheet, output_path, column, conditions, hue_
     print("Filtered data:")
     print(filtered_meta_data.head())
 
-    # Perform ANOVA
+    # Perform ANOVA and Tukey's HSD test
     anova_results = {}
+    tukey_results = {}
     for condition in conditions:
         subset = filtered_meta_data[filtered_meta_data[column] == condition]
         data_columns = subset.columns[:-1]  # Exclude the last column which is the condition column
         anova_data = [subset[col] for col in data_columns]
         f_statistic, p_value = stats.f_oneway(*anova_data)
         anova_results[condition] = {'F-statistic': f_statistic, 'p-value': p_value}
+        
+        # Perform Tukey's HSD test for post-hoc analysis
+        melted_subset = pd.melt(subset, id_vars=[column], var_name='Variable', value_name='Value')
+        tukey = pairwise_tukeyhsd(endog=melted_subset['Value'], groups=melted_subset['Variable'], alpha=0.05)
+        tukey_results[condition] = tukey.summary()
 
-    # Save ANOVA results to CSV
+    # Save ANOVA and Tukey HSD results to CSV
     anova_df = pd.DataFrame.from_dict(anova_results, orient='index')
     anova_df.index.name = hue_column  # Set index name to the dynamic hue column name
     anova_output_file = f"{output_path}/anova_results.csv"
@@ -73,6 +99,19 @@ def main(meta_file_path, file_path, sheet, output_path, column, conditions, hue_
         print(f"ANOVA results saved to: {anova_output_file}")
     except PermissionError as e:
         print(f"Error: Permission denied to write to {anova_output_file}. Please check file permissions.")
+        sys.exit(1)
+    
+    # Save Tukey HSD results
+    tukey_output_file = f"{output_path}/tukey_results.txt"
+    try:
+        with open(tukey_output_file, 'w') as f:
+            for condition, result in tukey_results.items():
+                f.write(f"Tukey HSD results for condition: {condition}\n")
+                f.write(result.as_text())
+                f.write('\n\n')
+        print(f"Tukey HSD results saved to: {tukey_output_file}")
+    except PermissionError as e:
+        print(f"Error: Permission denied to write to {tukey_output_file}. Please check file permissions.")
         sys.exit(1)
 
     # Plot boxplot using seaborn
@@ -87,22 +126,34 @@ def main(meta_file_path, file_path, sheet, output_path, column, conditions, hue_
 
         plot_data = pd.concat(plot_data, ignore_index=True)
 
+        # Debugging prints
+        print(plot_data.head())  
+        print(plot_data.columns) 
         # Melt the DataFrame to long format
         plot_data = pd.melt(plot_data, id_vars=[hue_column], var_name='Variable', value_name='Value')
+        print(plot_data.head())  
+        print(plot_data.columns)
 
         # Plot using seaborn boxplot with hue
         ax = sns.boxplot(x='Variable', y='Value', hue=hue_column, data=plot_data, palette='Set1')
-        
-        # Add significance annotations
-        add_stat_annotation(ax, data=plot_data, x='Variable', y='Value', hue=hue_column,
-                            box_pairs=[(conditions[i], conditions[j]) for i in range(len(conditions)) for j in range(i+1, len(conditions))],
-                            test='t-test_ind', text_format='star', loc='inside', verbose=2)
-        
-        plt.title('Box Plot by Condition')
+        plt.title('ANOVA test')
         plt.xlabel('Variable')
         plt.ylabel('Value')
         plt.xticks(rotation=45)
         plt.tight_layout()
+
+        # Annotate significant differences from Tukey HSD results
+        significant_pairs = []
+        for condition, result in tukey_results.items():
+            for row in result.data:
+                if row[5] < 0.05:  # p-value < 0.05 indicates significance
+                    significant_pairs.append((row[0], row[1]))
+
+        # Add significance annotations
+        for pair in significant_pairs:
+            ax.annotate('*', xy=(plot_data[plot_data['Variable'] == pair[0]].index[0], 
+                                 plot_data[plot_data['Variable'] == pair[1]].median()), 
+                        xytext=(0, 5), textcoords='offset points', ha='center', va='bottom', color='red', fontsize=14)
 
         # Save plot to file
         box_plot_file = f"{output_path}/box_plot.png"
@@ -119,81 +170,6 @@ def main(meta_file_path, file_path, sheet, output_path, column, conditions, hue_
     except Exception as e:
         print(f"Error: An unexpected error occurred: {str(e)}")
         sys.exit(1)
-
-def add_stat_annotation(ax, data=None, x=None, y=None, hue=None, box_pairs=None,
-                        test='t-test', text_format='full', loc='inside', verbose=1):
-    """
-    Function to perform statistical test and add annotation on top of the boxplot.
-    Parameters:
-    - ax: matplotlib Axes object to draw on.
-    - data: DataFrame containing data.
-    - x: Name of the variable on x-axis.
-    - y: Name of the variable on y-axis.
-    - hue: Name of the variable that defines subsets in `data`.
-    - box_pairs: List of tuples specifying pairs to compare (e.g., [('Group1', 'Group2'), ('Group3', 'Group4')]).
-    - test: Statistical test to perform; 't-test' or 'Mann-Whitney'.
-    - text_format: Format of the text annotation.
-    - loc: Location of the annotation; 'inside' or 'outside'.
-    - verbose: Level of verbosity; 0 (none) to 2 (highest).
-    """
-    def apply_stats_test(data, x, y, hue, box_pairs, test):
-        """ Function to apply statistical test between groups. """
-        results = {}
-        for pair in box_pairs:
-            group1 = data[data[hue] == pair[0]][y].dropna()
-            group2 = data[data[hue] == pair[1]][y].dropna()
-
-            if test == 't-test':
-                stat, p = stats.ttest_ind(group1, group2)
-            elif test == 'Mann-Whitney':
-                stat, p = stats.mannwhitneyu(group1, group2)
-            else:
-                raise ValueError("Unsupported test type. Choose either 't-test' or 'Mann-Whitney'.")
-
-            results[pair] = p
-
-        return results
-
-    def add_stat_annotation_text(ax, results, x, y, text_format, loc):
-        """ Function to add text annotation based on statistical results. """
-        for pair, pval in results.items():
-            if text_format == 'full':
-                text = f"{pair}: {pval:.2e}"
-            elif text_format == 'star':
-                text = get_pval_stars(pval)
-
-            if loc == 'inside':
-                height = max(data[y])
-            elif loc == 'outside':
-                height = max(data[y]) * 1.05
-
-            x1, x2 = ax.get_xticks()[pair[0]], ax.get_xticks()[pair[1]]
-            ax.plot([x1, x1, x2, x2], [height, height + height * 0.05, height + height * 0.05, height],
-                    lw=1.5, c='black')
-            ax.text((x1 + x2) * .5, height + height * 0.1, text, ha='center', va='bottom')
-
-    def get_pval_stars(pval):
-        """ Function to convert p-value to stars for significance levels. """
-        if pval < 0.0001:
-            return "****"
-        elif (pval < 0.001):
-            return "***"
-        elif (pval < 0.01):
-            return "**"
-        elif (pval < 0.05):
-            return "*"
-        else:
-            return "ns"
-
-    if verbose >= 1:
-        print(f"Adding statistical annotation based on {test} test")
-
-    # Apply statistical test
-    results = apply_stats_test(data, x, y, hue, box_pairs, test)
-
-    # Add annotation to the plot
-    add_stat_annotation_text(ax, results, x, y, text_format, loc)
-
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:

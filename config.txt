@@ -1,7 +1,7 @@
-meta_file_path=D:/data/TargettedData/test/metadata.csv
-file_path=D:/data/TargettedData/test/input.xlsx
+meta_file_path=D:/data/windowsStatChill/StatChill/test/metadata.csv
+file_path=D:/data/windowsStatChill/StatChill/test/input.xlsx
 sheet=toto17
-output_path=D:/data/TargettedData/test
+output_path=D:/data/windowsStatChill/StatChill/ouptput
 method=ANOVA
 column=condition
 label_column=

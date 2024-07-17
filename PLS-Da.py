@@ -1,9 +1,23 @@
+import importlib.util
+import subprocess
+import sys
+import os
+
+# List of required libraries
+required_libraries = ['tkinter', 'pandas', 'numpy', 'scikit-learn', 'matplotlib']
+
+# Check if each library is installed
+for lib in required_libraries:
+    spec = importlib.util.find_spec(lib)
+    if spec is None:
+        print(f"{lib} is not installed. Installing...")
+        subprocess.check_call([sys.executable, "-m", "pip", "install", lib])
+
+# Now import the required libraries
 import tkinter as tk
 from tkinter import filedialog, messagebox
 import pandas as pd
-import sys
-import os
-import numpy as np 
+import numpy as np
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 from sklearn.cross_decomposition import PLSRegression
 from sklearn.model_selection import train_test_split

@@ -1,3 +1,17 @@
+import importlib.util
+import subprocess
+import sys
+
+# List of required libraries
+required_libraries = ['tkinter', 'pandas']
+
+# Check if each library is installed
+for lib in required_libraries:
+    spec = importlib.util.find_spec(lib)
+    if spec is None:
+        print(f"{lib} is not installed. Installing...")
+        subprocess.check_call([sys.executable, "-m", "pip", "install", lib])
+
 import tkinter as tk
 from tkinter import filedialog, messagebox
 import pandas as pd
@@ -43,7 +57,7 @@ class FilePathApp:
         # Statistical Method Selection
         tk.Label(root, text="Statistical Method").grid(row=4, column=0)
         self.method_var.set("PCA")  # Default value
-        self.methods = ["PCA", "ANOVA", "Volcano", "PLS-Da", "Heatmap","batchCorrect"]
+        self.methods = ["PCA", "ANOVA", "Volcano", "PLS-Da", "corrHeatmap","batchCorrect"]
         self.method_menu = tk.OptionMenu(root, self.method_var, *self.methods)
         self.method_menu.grid(row=4, column=1)
 

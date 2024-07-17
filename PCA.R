@@ -70,6 +70,7 @@ file_path <- trimws(config[grepl("^file_path", config$V1), "V2"])
 sheet <- trimws(config[grepl("^sheet", config$V1), "V2"])
 output_path <- trimws(config[grepl("^output_path", config$V1), "V2"])
 column <- trimws(config[grepl("^column", config$V1), "V2"])
+label_column <- trimws(config[grepl("^label_column", config$V1), "V2"])  # Added label column
 conditions <- trimws(config[grepl("^conditions", config$V1), "V2"])
 
 # Parse conditions
@@ -109,19 +110,34 @@ cat("PCA results saved to:", pca_output_path, "\n")
 filtered_conditions <- filtered_meta[[column]]
 
 # 3D scatter plot using rgl
+colors <- rainbow(length(unique(filtered_conditions)))[as.integer(factor(filtered_conditions))]
+
+# If the label column is specified, use it for annotation
+if (label_column %in% colnames(filtered_meta)) {
+  labels <- filtered_meta[[label_column]]
+} else {
+  labels <- NULL
+}
+
+# Open a new rgl device
+open3d()
 plot3d(pc_scores[, 1], pc_scores[, 2], pc_scores[, 3], 
-       col = rainbow(length(unique(filtered_conditions)))[as.integer(factor(filtered_conditions))], size = 8,  # Increase point size
+       col = colors, size = 8,  # Increase point size
        xlab = "PC1", ylab = "PC2", zlab = "PC3",
        main = "PCA Plot in 3D")
 
+# Add legend
+legend3d("topright", legend = levels(factor(filtered_conditions)), pch = 16, col = rainbow(length(unique(filtered_conditions))))
 
+# Add annotations if labels are provided
+if (!is.null(labels)) {
+  text3d(pc_scores[, 1], pc_scores[, 2], pc_scores[, 3], texts = labels, adj = 1.5)
+}
 
-
-cat("PCA plot is done")
+cat("PCA plot is done\n")
 
 # Display the 3D plot in R session
 rglwidget()  # Interactive plot window
 while (TRUE) {
   Sys.sleep(60)  # Check every minute if the window is still open
 }
-

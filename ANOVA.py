@@ -1,8 +1,22 @@
+import importlib.util
+import subprocess
+import sys
+
+# List of required libraries
+required_libraries = ['pandas', 'scipy', 'seaborn', 'matplotlib']
+
+# Check if each library is installed
+for lib in required_libraries:
+    spec = importlib.util.find_spec(lib)
+    if spec is None:
+        print(f"{lib} is not installed. Installing...")
+        subprocess.check_call([sys.executable, "-m", "pip", "install", lib])
+
+# Now import the required libraries
 import pandas as pd
 import scipy.stats as stats
 import seaborn as sns
 import matplotlib.pyplot as plt
-import sys
 
 def main(meta_file_path, file_path, sheet, output_path, column, conditions, hue_column):
     # Load the MetaData

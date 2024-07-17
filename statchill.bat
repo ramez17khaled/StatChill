@@ -30,6 +30,9 @@ if "%method%"=="PLS-Da" (
 ) else if "%method%"=="batchCorrect" (
     "C:\Program Files\R\R-4.1.3\bin\Rscript.exe" batchCorrecting.R "%meta_file_path%" "%file_path%" "%sheet%" "%output_path%" "%column%" "%conditions%" "%label_column%"
     pause  # Pause the batch file execution to keep the command prompt window open
+) else if "%method%"=="corrHeatmap" (
+    "C:\Program Files\R\R-4.1.3\bin\Rscript.exe" corrHeatmap.R "%meta_file_path%" "%file_path%" "%sheet%" "%output_path%" "%column%" "%conditions%" "%label_column%"
+    pause  # Pause the batch file execution to keep the command prompt window open
 )
 
 endlocal
