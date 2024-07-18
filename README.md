@@ -4,7 +4,7 @@ StatChill is a simple, easy-to-use, and free statistical software for Windows. I
 
 ## RUN Steps
 
-1. If you have Git installed, inor this step :
+1. If you have Git installed, ignor this step :
     ```sh
     git clone git clone https://github.com/git/git 
     ```
