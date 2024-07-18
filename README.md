@@ -63,6 +63,7 @@ Select one of the following methods:
 - **Volcano Plot:** Suitable for a large number of detected features. It plots features showing significant differences between two conditions based on p-value and fold change.
 - **Correlation Heatmap:** Studies the correlation between metabolites in two conditions. Returns a heatmap and a CSV containing the correlation matrix.
 - **ANOVA:** Analyzes differences between selected conditions and features. Returns a CSV with p-values and a TXT file with p-values and f-values for each feature and condition.
+- **batchCorrect:** comming Soon!
 
 ### 6. Select Column of Interest:
 
