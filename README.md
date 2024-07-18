@@ -4,13 +4,17 @@ StatChill is a simple, easy-to-use, and free statistical software for Windows. I
 
 ## RUN Steps
 
-1. Clone the GitHub repository:
+1. If you have Git installed, inor this step :
+    ```sh
+    git clone git clone https://github.com/git/git 
+    ```
+2. Clone the GitHub repository:
 Open Command Prompt or PowerShell and run:
     ```sh
     git clone https://github.com/ramez17khaled/StatChill.git
     ```
-2. Execute the `installation.bat` for requirment installataion
-3. Execute the `StatChill.bat`  to run the software
+3. Execute the `installation.bat` for requirment installataion
+4. Execute the `StatChill.bat`  to run the software
 
 ## Input
 
