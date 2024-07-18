@@ -1,8 +1,8 @@
-meta_file_path=D:/data/windowsStatChill/StatChill/test/metadata.csv
-file_path=D:/data/windowsStatChill/StatChill/test/input.xlsx
-sheet=toto17
-output_path=D:/data/windowsStatChill/StatChill/ouptput
-method=ANOVA
+meta_file_path=PATH/TO/metadata.csv
+file_path=PATH/TO/input.xlsx
+sheet=toto
+output_path=PATH/TO/ouptput
+method=PCA
 column=condition
-label_column=
+label_column=label
 conditions=T,H
