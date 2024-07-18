@@ -4,13 +4,17 @@ StatChill is a simple, easy-to-use, and free statistical software for Windows. I
 
 ## RUN Steps
 
-1. Clone the GitHub repository:
+1. If you have Git installed, ignor this step :
+    ```sh
+    git clone git clone https://github.com/git/git 
+    ```
+2. Clone the GitHub repository:
 Open Command Prompt or PowerShell and run:
     ```sh
     git clone https://github.com/ramez17khaled/StatChill.git
     ```
-2. Execute the `installation.bat` for requirment installataion
-3. Execute the `StatChill.bat`  to run the software
+3. Execute the `installation.bat` for requirment installataion
+4. Execute the `StatChill.bat`  to run the software
 
 ## Input
 
@@ -63,6 +67,7 @@ Select one of the following methods:
 - **Volcano Plot:** Suitable for a large number of detected features. It plots features showing significant differences between two conditions based on p-value and fold change.
 - **Correlation Heatmap:** Studies the correlation between metabolites in two conditions. Returns a heatmap and a CSV containing the correlation matrix.
 - **ANOVA:** Analyzes differences between selected conditions and features. Returns a CSV with p-values and a TXT file with p-values and f-values for each feature and condition.
+- **batchCorrect:** comming Soon!
 
 ### 6. Select Column of Interest:
 
@@ -79,6 +84,7 @@ Select one of the following methods:
 ## Requirements
 
 1. Python
+https://www.python.org/ftp/python/3.9.5/python-3.9.5-amd64.exe
 2. R
-
+https://cran.r-project.org/bin/windows/base/
 
