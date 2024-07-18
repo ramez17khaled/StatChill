@@ -84,6 +84,7 @@ Select one of the following methods:
 ## Requirements
 
 1. Python
+https://www.python.org/ftp/python/3.9.5/python-3.9.5-amd64.exe
 2. R
-
+https://cran.r-project.org/bin/windows/base/
 
