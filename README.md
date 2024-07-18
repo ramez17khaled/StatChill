@@ -9,8 +9,8 @@ Open Command Prompt or PowerShell and run:
     ```sh
     git clone https://github.com/ramez17khaled/StatChill.git
     ```
-2. Execute the 'installation.bat' for requirment installataion
-3. Execute the 'StatChill.exe' to run the software
+2. Execute the `installation.bat` for requirment installataion
+3. Execute the `StatChill.bat`  to run the software
 
 ## Input
 
