@@ -76,12 +76,6 @@ Select one of the following methods:
 
 - Conditions of interest in the selected column, separated by commas.
 
-## Run Steps
-
-1. Clone the GitHub repository.
-2. Install the required packages.
-3. Run the `StatChill.bat` file.
-
 ## Requirements
 
 1. Python
