@@ -85,6 +85,6 @@ Select one of the following methods:
 
 1. Python
 https://www.python.org/ftp/python/3.9.5/python-3.9.5-amd64.exe
-2. R
+2. R-4.3.1 (if using other version, adapte the PATH in StatChill)
 https://cran.r-project.org/bin/windows/base/
 
