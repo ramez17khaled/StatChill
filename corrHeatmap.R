@@ -9,7 +9,7 @@ install_and_load <- function(packages) {
 }
 
 # List of required packages
-required_packages <- c("dplyr", "tidyr", "readxl", "ggplot2", "ggrepel","reshape2", "heatmaply")
+required_packages <- c("dplyr", "tidyr", "readxl", "ggplot2", "ggrepel", "reshape2", "heatmaply")
 
 cat("Process started.\n")
 
@@ -24,7 +24,6 @@ library(ggplot2)
 library(ggrepel)
 library(reshape2)
 library(heatmaply)
-
 
 # Print message on package loading completion
 cat("Packages loaded successfully.\n")
@@ -59,7 +58,6 @@ read_file <- function(file_path, sheet_name = NULL) {
     stop("Unsupported file format. Only CSV and XLSX/XLS files are supported.")
   }
   
-  
   cat("File read successfully.\n")
   
   return(data)
@@ -78,11 +76,10 @@ method <- trimws(config[grepl("^method", config$V1), "V2"])
 column <- trimws(config[grepl("^column", config$V1), "V2"])
 conditions <- trimws(config[grepl("^conditions", config$V1), "V2"])
 
-# Load metadata
+# Load and merge data as before
 cat("Loading metadata...\n")
 meta_data <- read_file(meta_file_path)
 
-# Load main data with specific sheet
 cat("Loading main data...\n")
 ThermoData <- read_file(file_path, sheet_name = sheet)
 
@@ -102,29 +99,57 @@ config_conditions <- trimws(config_conditions)
 filtered_data <- merged_data[merged_data[[column]] %in% config_conditions, ]
 
 cat("Data filtered successfully.\n")
+cat("Number of rows in filtered_data:", nrow(filtered_data), "\n")
+cat("Column names and types in filtered_data:\n")
+print(sapply(filtered_data, class))
 
-#corrHeatmap for discriminant generation
+# Identify and handle conversion issues
+conversion_issues <- sapply(filtered_data, function(x) any(is.na(as.numeric(x))))
+filtered_data <- filtered_data[, !conversion_issues]
+filtered_data[] <- lapply(filtered_data, function(x) {
+  # Try to convert to numeric
+  numeric_col <- as.numeric(as.character(x))
+  
+  # Return the converted column
+  return(numeric_col)
+})
 
-corr_df = filtered_data
-corr_df[, -ncol(corr_df)] <- lapply(corr_df[, -ncol(corr_df)], as.numeric)
-non_numeric_cols <- !sapply(corr_df, is.numeric)
-corr_df <- corr_df[, !non_numeric_cols]
-correlation <- cor(corr_df)
+# Check for columns with zero variance
+zero_var_cols <- sapply(filtered_data, function(x) sd(x, na.rm = TRUE) == 0)
+filtered_data <- filtered_data[, !zero_var_cols]
+
+# Re-check numeric columns
+numeric_cols <- sapply(filtered_data, is.numeric)
+if (sum(numeric_cols) < 2) {
+  stop("Insufficient numeric columns for correlation analysis.")
+}
+
+# Create a dataframe with only numeric columns
+corr_df <- filtered_data[, numeric_cols, drop = FALSE]
+
+# Compute correlation matrix
+correlation <- cor(corr_df, use = "pairwise.complete.obs")
+
+# Handle cases where correlation matrix might have NA/NaN values
+if (any(is.na(correlation))) {
+  cat("Warning: Correlation matrix contains NA/NaN values. These will be handled.\n")
+  correlation[is.na(correlation)] <- 0
+}
 
 # Convert correlation matrix to data frame for plotting
 correlation_df <- as.data.frame(as.table(correlation))
 colnames(correlation_df) <- c("Condition1", "Condition2", "Correlation")
+
 # Save correlation matrix to CSV in output directory
 write.csv(correlation, file.path(output_path, "correlation_matrix.csv"), row.names = TRUE)
 
-cat("correlation_df is generated and saved successfully.\n")
+cat("Correlation matrix is generated and saved successfully.\n")
 
+# Generate heatmap
 png(file = file.path(output_path, "corrHeatmap.png"))
 heatmap(correlation, xlab = paste("Condition", config_conditions[1]), ylab = paste("Condition", config_conditions[2]),
         scale = "none", main = "Correlation Heatmap", symm = TRUE, margins = c(8, 8))
-
 dev.off()
 
 cat("Analysis completed.\n")
-
 
