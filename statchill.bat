@@ -22,8 +22,9 @@ if "%method%"=="PLS-Da" (
     python PLS-Da.py "%meta_file_path%" "%file_path%" "%sheet%" "%output_path%" "%column%" "%conditions%"
 ) else if "%method%"=="Volcano" (
     "C:\Program Files\R\R-4.1.3\bin\Rscript.exe" Volcano.R "%meta_file_path%" "%file_path%" "%sheet%" "%output_path%" "%column%" "%conditions%"
-) else if "%method%"=="ANOVA" (
-    python testing.py %config_file%
+) else if "%method%"=="sigDiff" (
+    python metabo_sigDiff.py %config_file%
+	python family_sigDiff.py %config_file%
 ) else if "%method%"=="PCA" (
     "C:\Program Files\R\R-4.1.3\bin\Rscript.exe" PCA.R "%meta_file_path%" "%file_path%" "%sheet%" "%output_path%" "%column%" "%conditions%"
     pause  # Pause the batch file execution to keep the command prompt window open
@@ -32,6 +33,10 @@ if "%method%"=="PLS-Da" (
     pause  # Pause the batch file execution to keep the command prompt window open
 ) else if "%method%"=="corrHeatmap" (
     "C:\Program Files\R\R-4.1.3\bin\Rscript.exe" corrHeatmap.R "%meta_file_path%" "%file_path%" "%sheet%" "%output_path%" "%column%" "%conditions%" "%label_column%"
+    pause  # Pause the batch file execution to keep the command prompt window open
+)else if "%method%"=="repartition" (
+    "C:\Program Files\R\R-4.1.3\bin\Rscript.exe" metRepartition.R "%meta_file_path%" "%file_path%" "%sheet%" "%output_path%" "%column%" "%conditions%" "%label_column%"
+	"C:\Program Files\R\R-4.1.3\bin\Rscript.exe" sousclassHeatmap.R "%meta_file_path%" "%file_path%" "%sheet%" "%output_path%" "%column%" "%conditions%" "%label_column%"
     pause  # Pause the batch file execution to keep the command prompt window open
 )
 

@@ -1,8 +1,8 @@
 meta_file_path=D:/data/windowsStatChill/StatChill/test/metadata.csv
 file_path=D:/data/windowsStatChill/StatChill/test/input.xlsx
 sheet=toto17
-output_path=D:/data/windowsStatChill/StatChill/ouptput
-method=ANOVA
-column=condition
-label_column=
-conditions=T,H
+output_path=D:/data/windowsStatChill/StatChill/ot
+method=batchCorrect
+column=batch
+label_column=condition
+conditions=b1,b2,b3,b4

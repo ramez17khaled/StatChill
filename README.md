@@ -8,7 +8,7 @@ StatChill is a simple, easy-to-use, and free statistical software for Windows. I
     ```sh
     git clone git clone https://github.com/git/git 
     ```
-2. Clone the GitHub repository:
+2. Clone the GitHub repository or samply install the zip format for the GitHub:
 Open Command Prompt or PowerShell and run:
     ```sh
     git clone https://github.com/ramez17khaled/StatChill.git
@@ -66,25 +66,27 @@ Select one of the following methods:
 - **PLS-DA:** Supervised classification method. Provides a PLS-DA plot based on user-selected conditions and columns, along with a CSV and plot of the top 20 metabolites causing differences.
 - **Volcano Plot:** Suitable for a large number of detected features. It plots features showing significant differences between two conditions based on p-value and fold change.
 - **Correlation Heatmap:** Studies the correlation between metabolites in two conditions. Returns a heatmap and a CSV containing the correlation matrix.
-- **ANOVA:** Analyzes differences between selected conditions and features. Returns a CSV with p-values and a TXT file with p-values and f-values for each feature and condition.
-- **batchCorrect:** comming Soon!
+- **sigDiff:** Analyzes differences between selected conditions (two conditions) and features. Returns a two PDF (one for lipids and onther for lipids group) with boxplot and a "*" for significant differance. 
+- **batchCorrect:** use Limma library in R for batch correction and return the PCA and boxplot for the correction. A label column is required.
+- **repartition:** to visualise the repartition of metabolite and group metabolite between conditions. Results are shown as heatmaps for each groups and bar and pie plot for metabolites.
+
 
 ### 6. Select Column of Interest:
 
 - Column name of interest in the metadata.
 
-### 7. Select Label Column (Optional):
+### 7. Select Label Column:
 
-- Used in the 3D PCA method for plot annotation.
+- Used in the 3D PCA and batchCorrect methods for plot annotation.
 
 ### 8. Enter Conditions (comma-separated):
 
-- Conditions of interest in the selected column, separated by commas.
+- Conditions of interest in the selected column, separated by commas (ex: M,C2,...).
 
 ## Requirements
 
 1. Python
 https://www.python.org/ftp/python/3.9.5/python-3.9.5-amd64.exe
-2. R
+2. R-4.1.3 (Adapt the path statchill in case of version changing)
 https://cran.r-project.org/bin/windows/base/
 

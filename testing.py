@@ -1,6 +1,7 @@
 import importlib.util
 import subprocess
 import sys
+import os
 
 # List of required libraries
 required_libraries = ['pandas', 'scipy', 'seaborn', 'matplotlib', 'statsmodels']
@@ -17,7 +18,8 @@ import pandas as pd
 import scipy.stats as stats
 import seaborn as sns
 import matplotlib.pyplot as plt
-from statsmodels.stats.multicomp import pairwise_tukeyhsd
+from matplotlib.backends.backend_pdf import PdfPages
+
 
 def main(meta_file_path, file_path, sheet, output_path, column, conditions, hue_column):
     # Load the MetaData
@@ -75,101 +77,52 @@ def main(meta_file_path, file_path, sheet, output_path, column, conditions, hue_
     print("Filtered data:")
     print(filtered_meta_data.head())
 
-    # Perform ANOVA and Tukey's HSD test
-    anova_results = {}
-    tukey_results = {}
-    for condition in conditions:
-        subset = filtered_meta_data[filtered_meta_data[column] == condition]
-        data_columns = subset.columns[:-1]  # Exclude the last column which is the condition column
-        anova_data = [subset[col] for col in data_columns]
-        f_statistic, p_value = stats.f_oneway(*anova_data)
-        anova_results[condition] = {'F-statistic': f_statistic, 'p-value': p_value}
-        
-        # Perform Tukey's HSD test for post-hoc analysis
-        melted_subset = pd.melt(subset, id_vars=[column], var_name='Variable', value_name='Value')
-        tukey = pairwise_tukeyhsd(endog=melted_subset['Value'], groups=melted_subset['Variable'], alpha=0.05)
-        tukey_results[condition] = tukey.summary()
+    # Ensure the output directory exists
+    if not os.path.exists(output_path):
+        os.makedirs(output_path)
 
-    # Save ANOVA and Tukey HSD results to CSV
-    anova_df = pd.DataFrame.from_dict(anova_results, orient='index')
-    anova_df.index.name = hue_column  # Set index name to the dynamic hue column name
-    anova_output_file = f"{output_path}/anova_results.csv"
-    try:
-        anova_df.to_csv(anova_output_file)
-        print(f"ANOVA results saved to: {anova_output_file}")
-    except PermissionError as e:
-        print(f"Error: Permission denied to write to {anova_output_file}. Please check file permissions.")
-        sys.exit(1)
-    
-    # Save Tukey HSD results
-    tukey_output_file = f"{output_path}/tukey_results.txt"
-    try:
-        with open(tukey_output_file, 'w') as f:
-            for condition, result in tukey_results.items():
-                f.write(f"Tukey HSD results for condition: {condition}\n")
-                f.write(result.as_text())
-                f.write('\n\n')
-        print(f"Tukey HSD results saved to: {tukey_output_file}")
-    except PermissionError as e:
-        print(f"Error: Permission denied to write to {tukey_output_file}. Please check file permissions.")
-        sys.exit(1)
+    # Save plots to a single PDF file
+    pdf_path = os.path.join(output_path, 'metabolite_plots.pdf')
+    with PdfPages(pdf_path) as pdf:
+        metabolites = ThermoData.columns
+        for metabolite in metabolites:
+            group1 = filtered_meta_data[filtered_meta_data[column] == conditions[0]][metabolite]
+            group2 = filtered_meta_data[filtered_meta_data[column] == conditions[1]][metabolite]
 
-    # Plot boxplot using seaborn
-    plt.figure(figsize=(12, 8))
-    try:
-        # Prepare data for plotting
-        plot_data = []
-        for condition in conditions:
-            subset = filtered_meta_data[filtered_meta_data[column] == condition].copy()
-            subset[hue_column] = condition  # Add dynamic hue column based on config
-            plot_data.append(subset)
+            # Perform Shapiro-Wilk test for normality
+            stat1, p1 = stats.shapiro(group1)
+            stat2, p2 = stats.shapiro(group2)
+            print(f'Shapiro-Wilk Test for {metabolite} - Condition 1: Statistic={stat1}, p-value={p1}')
+            print(f'Shapiro-Wilk Test for {metabolite} - Condition 2: Statistic={stat2}, p-value={p2}')
 
-        plot_data = pd.concat(plot_data, ignore_index=True)
+            # Decide the test to use based on normality
+            if p1 > 0.05 and p2 > 0.05:
+                # Use t-test if both groups are normally distributed
+                t_stat, t_p_value = stats.ttest_ind(group1, group2)
+                p_value = t_p_value
+                test_result = 't-test'
+            else:
+                # Use Mann-Whitney U test if either group is not normally distributed
+                u_stat, u_p_value = stats.mannwhitneyu(group1, group2)
+                p_value = u_p_value
+                test_result = 'Mann-Whitney U test'
 
-        # Debugging prints
-        print(plot_data.head())  
-        print(plot_data.columns) 
-        # Melt the DataFrame to long format
-        plot_data = pd.melt(plot_data, id_vars=[hue_column], var_name='Variable', value_name='Value')
-        print(plot_data.head())  
-        print(plot_data.columns)
+            print(f'{test_result}: p-value={p_value}')
 
-        # Plot using seaborn boxplot with hue
-        ax = sns.boxplot(x='Variable', y='Value', hue=hue_column, data=plot_data, palette='Set1')
-        plt.title('ANOVA test')
-        plt.xlabel('Variable')
-        plt.ylabel('Value')
-        plt.xticks(rotation=45)
-        plt.tight_layout()
+            # Plotting
+            plt.figure(figsize=(8, 6))
+            sns.boxplot(x=column, y=metabolite, data=filtered_meta_data, hue=hue_column)
+            plt.title(f'{metabolite} ({test_result})')
+            plt.ylabel('Intensity')
+            plt.xlabel('Condition')
 
-        # Annotate significant differences from Tukey HSD results
-        significant_pairs = []
-        for condition, result in tukey_results.items():
-            for row in result.data:
-                if row[5] < 0.05:  # p-value < 0.05 indicates significance
-                    significant_pairs.append((row[0], row[1]))
+            # Add significance annotation
+            if p_value < 0.05:
+                plt.annotate('*', xy=(0.5, 0.95), xycoords='axes fraction', ha='center', fontsize=20, color='red')
 
-        # Add significance annotations
-        for pair in significant_pairs:
-            ax.annotate('*', xy=(plot_data[plot_data['Variable'] == pair[0]].index[0], 
-                                 plot_data[plot_data['Variable'] == pair[1]].median()), 
-                        xytext=(0, 5), textcoords='offset points', ha='center', va='bottom', color='red', fontsize=14)
-
-        # Save plot to file
-        box_plot_file = f"{output_path}/box_plot.png"
-        plt.savefig(box_plot_file)
-        print(f"Box plot saved to: {box_plot_file}")
-        plt.show()
-
-    except PermissionError as e:
-        print(f"Error: Permission denied to write to {box_plot_file}. Please check file permissions.")
-        sys.exit(1)
-    except KeyError as e:
-        print(f"Error: Column '{hue_column}' not found in plot_data. Check data preparation steps.")
-        sys.exit(1)
-    except Exception as e:
-        print(f"Error: An unexpected error occurred: {str(e)}")
-        sys.exit(1)
+            # Save the plot to the PDF
+            pdf.savefig()
+            plt.close()
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:

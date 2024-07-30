@@ -57,7 +57,7 @@ class FilePathApp:
         # Statistical Method Selection
         tk.Label(root, text="Statistical Method").grid(row=4, column=0)
         self.method_var.set("PCA")  # Default value
-        self.methods = ["PCA", "ANOVA", "Volcano", "PLS-Da", "corrHeatmap","batchCorrect"]
+        self.methods = ["PCA", "sigDiff", "Volcano", "PLS-Da", "corrHeatmap","batchCorrect","repartition"]
         self.method_menu = tk.OptionMenu(root, self.method_var, *self.methods)
         self.method_menu.grid(row=4, column=1)
 

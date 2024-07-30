@@ -93,9 +93,15 @@ filtered_data <- main_data[row.names(main_data) %in% row.names(filtered_meta), ]
 
 # Ensure all columns in filtered_data are numeric
 filtered_data <- apply(filtered_data, 2, as.numeric)
+filtered_data_df <- as.data.frame(filtered_data)
+# Calculate variance for each column
+variances <- apply(filtered_data_df, 2, var)
+# Identify and remove columns with zero variance
+zero_variance_columns <- names(variances[variances == 0])
+filtered_data_df_cleaned  <- filtered_data_df[, variances != 0]
 
 # Perform PCA
-pca_result <- prcomp(filtered_data, scale. = TRUE)
+pca_result <- prcomp(filtered_data_df_cleaned, scale. = TRUE)
 
 # Extract scores for the first three principal components
 pc_scores <- pca_result$x[, 1:3]

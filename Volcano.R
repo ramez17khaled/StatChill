@@ -136,8 +136,15 @@ generate_volcano_plot <- function(data, condition1_col, condition1_val, conditio
   
   # Calculate p-values
   p_values <- sapply(metabolite_data, function(col) {
-    t_test_result <- t.test(condition1_data[[col]], condition2_data[[col]])
-    return(t_test_result$p.value)
+    if (length(unique(condition1_data[[col]])) < 2 || length(unique(condition2_data[[col]])) < 2) {
+      return(NA)  # Not enough variation for t-test
+    }
+    t_test_result <- tryCatch({
+      t.test(condition1_data[[col]], condition2_data[[col]])$p.value
+    }, error = function(e) {
+      return(NA)  # Handle any errors during t-test
+    })
+    return(t_test_result)
   })
   
   p_values_df <- data.frame(Metabolite = names(p_values), P_Value = p_values)
@@ -158,9 +165,9 @@ generate_volcano_plot <- function(data, condition1_col, condition1_val, conditio
     geom_hline(yintercept = -log10(0.05), col = "gray", linetype = 'dashed') +
     geom_point(size = 1) +
     geom_hline(yintercept = -log10(0.05), linetype = "dashed", color = "orange") + # Add significance threshold line
-    labs(color = 'Severe',x = "log2(FC)", y = "-log10(P-Value)") +
-    theme_minimal()+
-    theme(panel.background = element_rect(fill = "white", color = NA))+
+    labs(color = 'Severe', x = "log2(FC)", y = "-log10(P-Value)") +
+    theme_minimal() +
+    theme(panel.background = element_rect(fill = "white", color = NA)) +
     scale_color_manual(values = c("blue", "gray", "red"),
                        labels = c("Downregulated", "Not significant", "Upregulated"))
   
