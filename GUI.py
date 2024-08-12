@@ -19,7 +19,7 @@ import pandas as pd
 class FilePathApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("File Path Selection")
+        self.root.title("StatChill")
 
         # Initialize variables to store user inputs
         self.meta_file_path = tk.StringVar()
