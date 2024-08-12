@@ -1,8 +1,8 @@
-meta_file_path=D:/data/windowsStatChill/StatChill/test/metadata.csv
-file_path=D:/data/windowsStatChill/StatChill/test/input.xlsx
-sheet=toto17
-output_path=D:/data/windowsStatChill/StatChill/ot
-method=batchCorrect
-column=batch
-label_column=condition
-conditions=b1,b2,b3,b4
+meta_file_path=PATH/to/your/metadata.csv
+file_path=PATH/to/your/data.xlsx OR .csv
+sheet=<Page name> in case on data.xlsx format
+output_path=PATH/to/your/output directory
+method=<selecte a method>
+column=<selecte a column in metadata>
+label_column=<selecte a label column in metadata>
+conditions=selecte conditions <C1,C2,C3,...>
