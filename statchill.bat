@@ -35,6 +35,9 @@ if "%method%"=="PLS-Da" (
     "C:\Program Files\R\R-4.1.3\bin\Rscript.exe" metRepartition.R "%meta_file_path%" "%file_path%" "%sheet%" "%output_path%" "%column%" "%conditions%" "%label_column%"
 	"C:\Program Files\R\R-4.1.3\bin\Rscript.exe" sousclassHeatmap.R "%meta_file_path%" "%file_path%" "%sheet%" "%output_path%" "%column%" "%conditions%" "%label_column%"
     pause  # Pause the batch file execution to keep the command prompt window open
+)else if "%method%"=="boxplot sum"(
+    python boxplot_sum.py %config_file%
+    pause  # Pause the batch file execution to keep the command prompt window open
 )
 
 endlocal
