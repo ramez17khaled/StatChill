@@ -50,6 +50,7 @@ Open Command Prompt or PowerShell and run:
 | f2     | istd | met3       | Intensities   |
 
 StatChill will isolate the Metabolite column and sample intensities for statistical analysis.
+(Sum or Somme rows is only in case of boxplot sum method)
 
 ### 3. Sheet/Page (Excel only):
 
