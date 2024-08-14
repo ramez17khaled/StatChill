@@ -27,11 +27,11 @@ def main(meta_file_path, file_path, sheet, output_path, column, conditions, hue_
     if meta_file_path.endswith(('.xlsx', '.xls')):
         meta_data = pd.read_excel(meta_file_path)
         meta_data.columns = [col.lower().replace(' ', '_') for col in meta_data.columns]
-        meta_data.set_index('sample', inplace=True)
+        meta_data.set_index('sample_id', inplace=True)
     elif meta_file_path.endswith('.csv'):
         meta_data = pd.read_csv(meta_file_path, sep=';')
         meta_data.columns = [col.lower().replace(' ', '_') for col in meta_data.columns]
-        meta_data.set_index('sample', inplace=True)
+        meta_data.set_index('sample_id', inplace=True)
     else:
         raise ValueError("Unsupported file format")
     print("MetaData loaded successfully:")
@@ -41,16 +41,16 @@ def main(meta_file_path, file_path, sheet, output_path, column, conditions, hue_
     print("Loading main data...")
     if file_path.endswith(('.xlsx', '.xls')):
         ThermoData = pd.read_excel(file_path, sheet_name=sheet)
-        ThermoData = ThermoData.drop(ThermoData.columns[[0, 1, 3, 4]], axis=1)
+        ThermoData = ThermoData.drop(ThermoData.columns[[0, 1]], axis=1)
         ThermoData.set_index(ThermoData.columns[0], inplace=True)
         ThermoData = ThermoData.T
-        ThermoData.index.name = 'sample'
+        ThermoData.index.name = 'sample_id'
     elif file_path.endswith('.csv'):
         ThermoData = pd.read_csv(file_path, sep=';')
-        ThermoData = ThermoData.drop(ThermoData.columns[[0, 1, 3, 4]], axis=1)
+        ThermoData = ThermoData.drop(ThermoData.columns[[0, 1]], axis=1)
         ThermoData.set_index(ThermoData.columns[0], inplace=True)
         ThermoData = ThermoData.T
-        ThermoData.index.name = 'sample'
+        ThermoData.index.name = 'sample_id'
     else:
         raise ValueError("Unsupported file format")
     print("Main data loaded successfully:")
@@ -70,7 +70,7 @@ def main(meta_file_path, file_path, sheet, output_path, column, conditions, hue_
     # Merging data-metadata
     print("Merging data...")
     selected_meta_data = meta_data[[column]]
-    merged_data = pd.merge(ThermoData, selected_meta_data, on='sample', how='left')
+    merged_data = pd.merge(ThermoData, selected_meta_data, on='sample_id', how='left')
     filtered_meta_data = merged_data[merged_data[column].isin(conditions)]
     print("Merged data:")
     print(merged_data.head())

@@ -21,65 +21,54 @@ class FilePathApp:
         self.root = root
         self.root.title("StatChill")
 
-        # Initialize variables to store user inputs
         self.meta_file_path = tk.StringVar()
         self.file_path = tk.StringVar()
         self.sheet = tk.StringVar()
         self.output_path = tk.StringVar()
         self.method_var = tk.StringVar()
         self.column_var = tk.StringVar()
-        self.label_column_var = tk.StringVar(value="")  # Default to empty string for label column
+        self.label_column_var = tk.StringVar(value="") 
         self.conditions = tk.StringVar()
 
-        # MetaData File Path Entry
         tk.Label(root, text="MetaData File Path").grid(row=0, column=0)
         self.meta_entry = tk.Entry(root, width=50, textvariable=self.meta_file_path)
         self.meta_entry.grid(row=0, column=1)
         tk.Button(root, text="Browse", command=self.browse_meta).grid(row=0, column=2)
 
-        # Data File Path Entry
         tk.Label(root, text="Data File Path").grid(row=1, column=0)
         self.file_entry = tk.Entry(root, width=50, textvariable=self.file_path)
         self.file_entry.grid(row=1, column=1)
         tk.Button(root, text="Browse", command=self.browse_file).grid(row=1, column=2)
 
-        # Sheet/Page Entry
         tk.Label(root, text="Sheet/Page (Excel only)").grid(row=2, column=0)
         self.sheet_entry = tk.Entry(root, width=50, textvariable=self.sheet)
         self.sheet_entry.grid(row=2, column=1)
 
-        # Output Path Entry
         tk.Label(root, text="Output Path").grid(row=3, column=0)
         self.output_entry = tk.Entry(root, width=50, textvariable=self.output_path)
         self.output_entry.grid(row=3, column=1)
         tk.Button(root, text="Browse", command=self.browse_output).grid(row=3, column=2)
 
-        # Statistical Method Selection
         tk.Label(root, text="Statistical Method").grid(row=4, column=0)
         self.method_var.set("PCA")  # Default value
-        self.methods = ["PCA", "sigDiff", "Volcano", "PLS-Da", "corrHeatmap","batchCorrect","repartition"]
+        self.methods = ["PCA", "sigDiff", "Volcano", "PLS-Da", "corrHeatmap","batchCorrect","repartition","boxplot sum"]
         self.method_menu = tk.OptionMenu(root, self.method_var, *self.methods)
         self.method_menu.grid(row=4, column=1)
 
-        # Column of Interest
         tk.Label(root, text="Select Column of Interest").grid(row=5, column=0)
         self.column_menu = tk.OptionMenu(root, self.column_var, '')
         self.column_menu.grid(row=5, column=1)
 
-        # Label Column Selection
         tk.Label(root, text="Select Label Column (Optional)").grid(row=6, column=0)
         self.label_column_menu = tk.OptionMenu(root, self.label_column_var, '')
         self.label_column_menu.grid(row=6, column=1)
 
-        # Conditions Entry
         tk.Label(root, text="Enter Conditions (comma-separated)").grid(row=7, column=0)
         self.condition_entry = tk.Entry(root, width=50, textvariable=self.conditions)
         self.condition_entry.grid(row=7, column=1)
 
-        # Submit Button
         tk.Button(root, text="Submit", command=self.submit).grid(row=8, columnspan=3)
 
-        # Bind events
         self.meta_entry.bind("<FocusOut>", self.update_columns)
 
     def browse_meta(self):
@@ -117,7 +106,7 @@ class FilePathApp:
 
             columns = [col.lower().replace(' ', '_') for col in meta_data.columns]
             self.column_var.set(columns[0])
-            self.label_column_var.set("")  # Reset label column selection to empty
+            self.label_column_var.set("")  
             menu = self.column_menu["menu"]
             menu.delete(0, "end")
 
@@ -138,14 +127,13 @@ class FilePathApp:
         output_path = self.output_entry.get()
         method = self.method_var.get()
         column = self.column_var.get()
-        label_column = self.label_column_var.get() if self.label_column_var.get() else ""  # Default to empty string if not selected
+        label_column = self.label_column_var.get() if self.label_column_var.get() else ""  
         conditions = self.conditions.get()
 
         if not all([meta_file_path, file_path, output_path, method]):
             messagebox.showerror("Error", "Please fill in all fields.")
             return
 
-        # Write all input fields to a config file
         try:
             with open('config.txt', 'w') as f:
                 f.write(f"meta_file_path={meta_file_path}\n")
@@ -154,11 +142,11 @@ class FilePathApp:
                 f.write(f"output_path={output_path}\n")
                 f.write(f"method={method}\n")
                 f.write(f"column={column}\n")
-                f.write(f"label_column={label_column}\n")  # Write label column to config
+                f.write(f"label_column={label_column}\n")  
                 f.write(f"conditions={conditions}\n")
 
             messagebox.showinfo("Success", "Configuration saved. The batch file will now process the data.")
-            self.root.quit()  # Close the GUI
+            self.root.quit()  
         except Exception as e:
             messagebox.showerror("Error", f"Failed to save configuration: {e}")
 

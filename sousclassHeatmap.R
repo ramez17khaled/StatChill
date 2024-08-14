@@ -39,7 +39,7 @@ read_file <- function(file_path, sheet_name = NULL) {
     # Read CSV file
     data <- read.csv(file_path, stringsAsFactors = FALSE, sep = ';')
     colnames(data) <- tolower(gsub(" ", "_", colnames(data)))
-    row.names(data) <- data$sample  # Assuming 'sample' is the row identifier
+    row.names(data) <- data$sample_id  # Assuming 'sample_id' is the row identifier
   } else if (file_ext %in% c("xlsx", "xls")) {
     # Read XLSX or XLS file
     if (is.null(sheet_name)) {
@@ -77,7 +77,7 @@ meta_data <- read_file(meta_file_path)
 main_data <- read_file(file_path, sheet)
 
 #data preparation
-main_data <- main_data[, -c(2, 4, 5)]
+main_data <- main_data[, -c(2)]
 
 souFamille_main_data <- main_data[, -1]
 souFamille_main_data <- souFamille_main_data %>%
