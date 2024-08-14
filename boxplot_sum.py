@@ -50,7 +50,7 @@ def main(meta_file_path, file_path, sheet, output_path, column, conditions, hue_
     if file_path.endswith(('.xlsx', '.xls')):
         ThermoData = pd.read_excel(file_path, sheet_name=sheet)
         ThermoData = ThermoData.iloc[4:]
-        ThermoData = ThermoData.drop(ThermoData.tail(4).index)
+        #ThermoData = ThermoData.drop(ThermoData.tail(4).index)
         ThermoData.columns = ThermoData.iloc[0]
         ThermoData = ThermoData.drop(ThermoData.index[0])
         for i, col in enumerate(ThermoData.columns):
@@ -73,7 +73,7 @@ def main(meta_file_path, file_path, sheet, output_path, column, conditions, hue_
     elif file_path.endswith('.csv'):
         ThermoData = pd.read_csv(file_path, sep=';')
         ThermoData = ThermoData.iloc[4:]
-        ThermoData = ThermoData.drop(ThermoData.tail(4).index)
+        #ThermoData = ThermoData.drop(ThermoData.tail(4).index)
         ThermoData.columns = ThermoData.iloc[0]
         ThermoData = ThermoData.drop(ThermoData.index[0])
         for i, col in enumerate(ThermoData.columns):
