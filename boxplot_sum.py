@@ -68,6 +68,7 @@ def main(meta_file_path, file_path, sheet, output_path, column, conditions, hue_
         ThermoData_Sum = ThermoData_Sum.T
         ThermoData_Sum.columns = ThermoData_Sum.iloc[0]
         ThermoData_Sum = ThermoData_Sum.iloc[1:]
+        ThermoData_Sum.dropna(axis=1, how='any', inplace=True)
         ThermoData_Sum.index.name = 'sample_id'
     elif file_path.endswith('.csv'):
         ThermoData = pd.read_csv(file_path, sep=';')

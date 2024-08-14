@@ -42,12 +42,12 @@ Open Command Prompt or PowerShell and run:
 
 **Example Dataset:**
 
-| Family | ISTD | Metabolite | Samples       |
-|--------|------|------------|---------------|
-| f1     | istd | met1       | Intensities   |
-| f1     | istd | met2       | Intensities   |
-|        |      |Sum OR Somme|Values of sum  | (only in case of boxplot sum method)
-| f2     | istd | met3       | Intensities   |
+| Family | ISTD | Metabolite name| Samples       |
+|--------|------|----------------|---------------|
+| f1     | istd | met1           | Intensities   |
+| f1     | istd | met2           | Intensities   |
+|        |      |Sum OR Somme    |Values of sum  | (only in case of boxplot sum method)
+| f2     | istd | met3           | Intensities   |
 
 StatChill will isolate the Metabolite column and sample intensities for statistical analysis.
 
