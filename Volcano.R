@@ -42,15 +42,15 @@ read_file <- function(file_path, sheet_name = NULL) {
     # Read CSV file
     data <- read.csv(file_path, stringsAsFactors = FALSE, sep = ';')
     colnames(data) <- tolower(gsub(" ", "_", colnames(data)))
-    row.names(data) <- data$sample
+    row.names(data) <- data$sample_id
   } else if (file_ext %in% c("xlsx", "xls")) {
     # Read XLSX or XLS file
     if (is.null(sheet_name)) {
       stop("Sheet name must be specified for Excel files.")
     }
     data <- readxl::read_excel(file_path, sheet = sheet_name)
-    data <- data[ , -c(1, 2, 4, 5)]  # drop columns
-    data <- t(data)  # transpose
+    data <- data[ , -c(1, 2)]  
+    data <- t(data)  
     colnames(data) <- as.character(unlist(data[1, ]))
     data <- data[-1, ]
   } else {

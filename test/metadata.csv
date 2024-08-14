@@ -1,4 +1,4 @@
-sample;claSs;injection order;batch;CondiTion;type
+sample_ID;claSs;injection order;batch;CondiTion;type
 240326JSO_QCdil02;QCDil;1;b1;QCDil;QCDil2
 240326JSO_QCdil04;QCDil;2;b1;QCDil;QCDil4
 240326JSO_QC01;QC;3;b1;QC;QC 1

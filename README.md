@@ -27,11 +27,11 @@ Open Command Prompt or PowerShell and run:
 
 **Example Metadata:**
 
-| SAMPLE | Class  | Condition | Batch | Type | Injection Order |
-|--------|--------|-----------|-------|------|-----------------|
-| S1     | QC     |           | b2    | QC1  | 1               |
-| S2     | Sample | C1        | b1    | B25  | 2               |
-| S3     | BLC    | C2        | b1    | BLC  | 3               |
+| SAMPLE_ID | Class  | Condition | Batch | Type | Injection Order |
+|-----------|--------|-----------|-------|------|-----------------|
+| S1        | QC     |           | b2    | QC1  | 1               |
+| S2        | Sample | C1        | b1    | B25  | 2               |
+| S3        | BLC    | C2        | b1    | BLC  | 3               |
 
 ### 2. Data File Path:
 
@@ -42,11 +42,12 @@ Open Command Prompt or PowerShell and run:
 
 **Example Dataset:**
 
-| Family | ISTD | Metabolite | MZ  | RT  | Samples       |
-|--------|------|------------|-----|-----|---------------|
-| f1     | istd | met1       | MZ1 | RT1 | Intensities   |
-| f1     | istd | met2       | MZ1 | RT2 | Intensities   |
-| f2     | istd | met3       | MZ2 | RT1 | Intensities   |
+| Family | ISTD | Metabolite | Samples       |
+|--------|------|------------|---------------|
+| f1     | istd | met1       | Intensities   |
+| f1     | istd | met2       | Intensities   |
+|        |      |Sum OR Somme|Values of sum  | (only in case of boxplot sum method)
+| f2     | istd | met3       | Intensities   |
 
 StatChill will isolate the Metabolite column and sample intensities for statistical analysis.
 
@@ -69,6 +70,7 @@ Select one of the following methods:
 - **sigDiff:** Analyzes differences between selected conditions (two conditions) and features. Returns a two PDF (one for lipids and onther for lipids group) with boxplot and a "*" for significant differance. 
 - **batchCorrect:** use Limma library in R for batch correction and return the PCA and boxplot for the correction. A label column is required.
 - **repartition:** to visualise the repartition of metabolite and group metabolite between conditions. Results are shown as heatmaps for each groups and bar and pie plot for metabolites.
+- **Boxplot sum:** to visualise the repartition of falily's sum a between conditions. Results are shown as boxplot for each groups in case of many samples for the same condition, and bar plot if ther only on sample for each condition.
 
 
 ### 6. Select Column of Interest:
@@ -85,7 +87,7 @@ Select one of the following methods:
 
 ## Requirements
 
-1. Python
+1. Python-3.9.5
 https://www.python.org/ftp/python/3.9.5/python-3.9.5-amd64.exe
 2. R-4.1.3 (Adapt the path statchill in case of version changing)
 https://cran.r-project.org/bin/windows/base/
