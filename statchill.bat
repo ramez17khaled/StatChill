@@ -38,6 +38,9 @@ if "%method%"=="PLS-Da" (
 ) else if "%method%"=="boxplot sum" (
     python boxplot_sum.py "%config_file%"
     pause
+) else if "%method%"=="venn sum" (
+    python venn.py "%config_file%"
+    pause
 )
 
 endlocal
