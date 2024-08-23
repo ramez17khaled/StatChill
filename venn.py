@@ -118,10 +118,10 @@ def main(file_path, sheet, output_path):
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 8), gridspec_kw={'width_ratios': [2, 1]})
 
     venn2([set1, set2], set_labels=('Intital DB', 'Detected'),
-          set_colors=('lightgreen', 'skyblue'),
+          set_colors=('green', 'skyblue'),
           alpha=0.6, ax=ax1)
 
-    bars = ax2.bar(['Intital DB', 'Detected'], [len(set1), len(set2)], color=['lightgreen', 'skyblue'])
+    bars = ax2.bar(['Intital DB', 'Detected'], [len(set1), len(set2)], color=['green', 'skyblue'])
 
     for bar in bars:
         height = bar.get_height()
