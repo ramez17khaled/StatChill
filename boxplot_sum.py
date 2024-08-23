@@ -136,7 +136,7 @@ def main(meta_file_path, file_path, sheet, output_path, column, conditions, hue_
             for metabolite in metabolites:
                 df_metabolite = df_melt[df_melt['metabolite'] == metabolite]
 
-                plt.figure(figsize=(12, 8))
+                plt.figure(figsize=(16, 10))
                 if df_metabolite.groupby('condition').size().min() > 1:
                     # Enough samples for a boxplot
                     ax = sns.boxplot(data=df_metabolite, x='condition', y='sum', palette=color_dict)
