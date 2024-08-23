@@ -3,7 +3,7 @@ import subprocess
 import sys
 import os
 
-required_libraries = ['pandas', 'scipy', 'matplotlib', 'numpy','datetime']
+required_libraries = ['pandas', 'scipy', 'matplotlib', 'numpy','datetime','matplotlib_venn']
 
 for lib in required_libraries:
     spec = importlib.util.find_spec(lib)
