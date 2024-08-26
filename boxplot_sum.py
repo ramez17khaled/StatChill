@@ -49,8 +49,9 @@ def main(meta_file_path, file_path, sheet, output_path, column, conditions, hue_
     print("Loading main data...")
     if file_path.endswith(('.xlsx', '.xls')):
         ThermoData = pd.read_excel(file_path, sheet_name=sheet)
-        ThermoData.columns = ThermoData.iloc[4]
-        ThermoData = ThermoData.drop(ThermoData.index[4])
+        index = ThermoData.loc[ThermoData.iloc[:, 0] == 'Family'].index[0]
+        ThermoData.columns = ThermoData.iloc[index]
+        ThermoData = ThermoData.drop(ThermoData.index[index])
         for i, col in enumerate(ThermoData.columns):
             if ' ' in col:
                 ThermoData.columns.values[i] = col.replace(' ', '_')
