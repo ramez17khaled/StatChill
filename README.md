@@ -40,14 +40,33 @@ Open Command Prompt or PowerShell and run:
   - Metabolite column in the third position.
   - Sample intensities start from the sixth column.
 
-**Example Dataset:**
+**Example Dataset (generale):**
 
 | Family | Metabolite name| MZ | RT | Samples       |
 |--------|----------------|----|----|---------------|
 | f1     | met1           |    |    | Intensities   |
 | f1     | met2           |    |    | Intensities   |
-|        |Sum OR Somme    |    |    | Values of sum | (only in case of boxplot sum method)
 | f2     | met3           |    |    | Intensities   |
+
+**Example Dataset (for sum functions):**
+
+| Family |ISTD| Metabolite name | Samples       |
+|--------|----|-----------------|---------------|
+| f1     | i1 | met1            | Intensities   |
+| f1     | i1 | met2            | Intensities   |
+|        | i2 |Sum OR Somme     | Values of sum |
+| f2     | i3 | met3            | Intensities   |
+
+**Example Dataset (for venn functions):**
+
+SKIPE THE FIRST 3 ROWS
+
+| Intital Database |Species detected|
+|------------------|----------------|
+| metabolite 1     | metabolite 1   |
+| metabolite 2     | metabolite 2   |
+| metabolite 3     | metabolite 3   |
+| metabolite 4     | metabolite 4   |
 
 StatChill will isolate the Metabolite column and sample intensities for statistical analysis.
 
