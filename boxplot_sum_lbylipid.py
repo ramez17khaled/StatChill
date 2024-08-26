@@ -61,8 +61,8 @@ def main(meta_file_path, file_path, sheet, output_path, column, conditions, hue_
             if isinstance(row['Metabolite_name'], str) and row['Metabolite_name'].startswith(('Sum', 'Somme')):
                 ThermoData.loc[index, 'Family'] = row['Metabolite_name']
         ThermoData['Family'] = ThermoData['Family'].fillna(method='ffill')
-        ThermoData = ThermoData.drop(ThermoData.columns[[1, 2]], axis=1)
-        ThermoData_Sum = ThermoData[ThermoData['Family'].str.startswith(('Somme', 'Sum'))]
+        ThermoData = ThermoData[ThermoData['Family'].str.len().between(1, 7, inclusive=True) & ThermoData['Family'].notna()]
+        ThermoData_Sum = ThermoData.drop(ThermoData.columns[[0, 1]], axis=1)
         #ThermoData = ThermoData.groupby(ThermoData.columns[0]).mean()
         ThermoData_Sum = ThermoData_Sum.T
         ThermoData_Sum.columns = ThermoData_Sum.iloc[0]
@@ -80,9 +80,6 @@ def main(meta_file_path, file_path, sheet, output_path, column, conditions, hue_
                 ThermoData.columns.values[i] = col.replace(' ', '_')
             else:
                 continue
-        for index, row in ThermoData.iterrows():
-            if isinstance(row['Metabolite_name'], str) and row['Metabolite_name'].startswith(('Sum', 'Somme')):
-                ThermoData.loc[index, 'Family'] = row['Metabolite_name']
         ThermoData['Family'] = ThermoData['Family'].fillna(method='ffill')
         ThermoData = ThermoData.drop(ThermoData.columns[[1, 2]], axis=1)
         #ThermoData = ThermoData.groupby(ThermoData.columns[0]).mean()
@@ -141,7 +138,7 @@ def main(meta_file_path, file_path, sheet, output_path, column, conditions, hue_
                     ax = sns.boxplot(data=df_metabolite, x='condition', y='sum', palette=color_dict)
                     plt.title(f'Boxplot for Metabolite: {metabolite}')
                     plt.xlabel('Condition')
-                    plt.ylabel('Sum')
+                    plt.ylabel('')
                     plt.ylim(df_metabolite['sum'].min() - 10, df_metabolite['sum'].max() + 10)
                     handles = [plt.Line2D([0], [0], color=color_dict[cond], lw=4) for cond in conditions]
                     plt.legend(handles, conditions, title='Conditions', bbox_to_anchor=(1.05, 1), loc='upper left', title_fontsize='13', fontsize='11')
@@ -150,7 +147,7 @@ def main(meta_file_path, file_path, sheet, output_path, column, conditions, hue_
                     bars = plt.bar(df_metabolite['condition'], df_metabolite['sum'], color=[color_dict[cond] for cond in df_metabolite['condition']])
                     plt.title(f'Bar Plot for Metabolite: {metabolite}')
                     plt.xlabel('Condition')
-                    plt.ylabel('Sum')
+                    plt.ylabel('')
                     handles = [plt.Line2D([0], [0], color=color_dict[cond], lw=4) for cond in conditions]
                     plt.legend(handles, conditions, title='Conditions', bbox_to_anchor=(1.05, 1), loc='upper left', title_fontsize='13', fontsize='11')
 
