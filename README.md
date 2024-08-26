@@ -42,12 +42,12 @@ Open Command Prompt or PowerShell and run:
 
 **Example Dataset:**
 
-| Family | ISTD | Metabolite name| Samples       |
-|--------|------|----------------|---------------|
-| f1     | istd | met1           | Intensities   |
-| f1     | istd | met2           | Intensities   |
-|        |      |Sum OR Somme    |Values of sum  | (only in case of boxplot sum method)
-| f2     | istd | met3           | Intensities   |
+| Family | Metabolite name| MZ | RT | Samples       |
+|--------|----------------|----|----|---------------|
+| f1     | met1           |    |    | Intensities   |
+| f1     | met2           |    |    | Intensities   |
+|        |Sum OR Somme    |    |    | Values of sum | (only in case of boxplot sum method)
+| f2     | met3           |    |    | Intensities   |
 
 StatChill will isolate the Metabolite column and sample intensities for statistical analysis.
 
@@ -70,8 +70,9 @@ Select one of the following methods:
 - **sigDiff:** Analyzes differences between selected conditions (two conditions) and features. Returns a two PDF (one for lipids and onther for lipids group) with boxplot and a "*" for significant differance. 
 - **batchCorrect:** use Limma library in R for batch correction and return the PCA and boxplot for the correction. A label column is required.
 - **repartition:** to visualise the repartition of metabolite and group metabolite between conditions. Results are shown as heatmaps for each groups and bar and pie plot for metabolites.
-- **Boxplot sum:** to visualise the repartition of family's sum a between conditions. Results are shown as boxplot for each groups in case of many samples for the same condition, and bar plot if ther only on sample for each condition.
+- **Boxplot sum:** to visualise the repartition of family AND metabolite's sum a between conditions. Results are shown as boxplot for each groups in case of many samples for the same condition, and bar plot if ther only on sample for each condition.
 - **venn sum:** to visualise the detection capacity between DB and experiment detection. Results are shown as venn diagram and between DB and Experiment, and an histogram for the items in each group. DATA HAS A SPECIAL REPARTITION: tow column named ('Intital_Database' and 'Species_detected') AND MUST SKIPED THE FIRST 3 ROWS. 
+- **QC boxplot:** to visualise repartition of metabolites with a boxplot AND/OR histogram for QCs or any conditions in chousing in the metadata by selection the column of interrest and your conditions in this column. DATA HAS A SPECIAL REPARTITION: tow column named ('Intital_Database' and 'Species_detected') AND MUST SKIPED THE FIRST 3 ROWS. 
 
 
 ### 6. Select Column of Interest:
