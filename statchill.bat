@@ -37,9 +37,13 @@ if "%method%"=="PLS-Da" (
     pause
 ) else if "%method%"=="boxplot sum" (
     python boxplot_sum.py "%config_file%"
+    python boxplot_sum_lbylipid.py "%config_file%"
     pause
 ) else if "%method%"=="venn sum" (
     python venn.py "%config_file%"
+    pause
+) else if "%method%"=="QC boxplot" (
+    python boxplot_QCs.py "%config_file%"
     pause
 )
 
