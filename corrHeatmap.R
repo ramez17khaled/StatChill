@@ -50,7 +50,7 @@ read_file <- function(file_path, sheet_name = NULL) {
       stop("Sheet name must be specified for Excel files.")
     }
     data <- readxl::read_excel(file_path, sheet = sheet_name)
-    data <- data[ , -c(1, 2)]  
+    data <- data[ , -c(1, 3, 4)]  
     data <- t(data)  
     colnames(data) <- as.character(unlist(data[1, ]))
     data <- data[-1, ]

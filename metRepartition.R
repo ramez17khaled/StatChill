@@ -76,7 +76,7 @@ meta_data <- read_file(meta_file_path)
 main_data <- read_file(file_path, sheet)
 
 #data preprocessing
-main_data <- main_data[, -c(2)]  # Drop specific columns
+main_data <- main_data[, -c(3, 4)]  # Drop specific columns
 
 Famille_main_data_base <- main_data[, -2]
 Famille_main_data <- Famille_main_data_base %>%

@@ -77,7 +77,7 @@ meta_data <- read_file(meta_file_path)
 main_data <- read_file(file_path, sheet)
 
 #data preparation
-main_data <- main_data[, -c(2)]
+main_data <- main_data[, -c(3, 4)]
 
 souFamille_main_data <- main_data[, -1]
 souFamille_main_data <- souFamille_main_data %>%

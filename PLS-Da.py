@@ -44,14 +44,14 @@ def main(meta_file_path, file_path, sheet, output_path, column, conditions):
     print("Loading main data...")
     if file_path.endswith(('.xlsx', '.xls')):
         ThermoData = pd.read_excel(file_path, sheet_name=sheet)
-        ThermoData = ThermoData.drop(ThermoData.columns[[0, 1]], axis=1)
+        ThermoData = ThermoData.drop(ThermoData.columns[[0, 2, 3]], axis=1)
         ThermoData.columns = [col.replace(' ', '_') for col in ThermoData.columns]
         ThermoData.set_index(ThermoData.columns[0], inplace=True)
         ThermoData = ThermoData.T
         ThermoData.index.name = 'sample_id'
     elif file_path.endswith('.csv'):
         ThermoData = pd.read_csv(file_path, sep=';')
-        ThermoData = ThermoData.drop(ThermoData.columns[[0, 1]], axis=1)
+        ThermoData = ThermoData.drop(ThermoData.columns[[0, 2, 3]], axis=1)
         ThermoData.columns = [col.replace(' ', '_') for col in ThermoData.columns]
         ThermoData.set_index(ThermoData.columns[0], inplace=True)
         ThermoData = ThermoData.T
