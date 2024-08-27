@@ -3,7 +3,7 @@ import subprocess
 import sys
 import os
 
-required_libraries = ['pandas', 'scipy', 'matplotlib', 'numpy','datetime','matplotlib_venn']
+required_libraries = ['pandas', 'scipy', 'matplotlib', 'numpy','datetime','matplotlib_venn', 'openpyxl']
 
 for lib in required_libraries:
     spec = importlib.util.find_spec(lib)
@@ -12,6 +12,7 @@ for lib in required_libraries:
         subprocess.check_call([sys.executable, "-m", "pip", "install", lib])
 
 import pandas as pd
+import openpyxl
 import scipy.stats as stats
 import numpy as np
 import matplotlib.pyplot as plt

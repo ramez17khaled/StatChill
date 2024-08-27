@@ -4,7 +4,7 @@ import sys
 import os
 
 # List of required libraries
-required_libraries = ['pandas', 'scipy', 'seaborn', 'matplotlib', 'statsmodels','datetime']
+required_libraries = ['pandas', 'scipy', 'seaborn', 'matplotlib', 'statsmodels', 'openpyxl', 'datetime']
 
 # Check if each library is installed
 for lib in required_libraries:
@@ -15,6 +15,7 @@ for lib in required_libraries:
 
 # Now import the required libraries
 import pandas as pd
+import openpyxl
 import scipy.stats as stats
 import seaborn as sns
 import matplotlib.pyplot as plt
