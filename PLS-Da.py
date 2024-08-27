@@ -4,7 +4,7 @@ import sys
 import os
 
 # List of required libraries
-required_libraries = ['tkinter', 'pandas', 'numpy', 'scikit-learn', 'matplotlib']
+required_libraries = ['tkinter', 'pandas', 'numpy', 'scikit-learn', 'matplotlib', 'openpyxl']
 
 # Check if each library is installed
 for lib in required_libraries:
@@ -15,6 +15,7 @@ for lib in required_libraries:
 
 # Now import the required libraries
 import tkinter as tk
+import openpyxl
 from tkinter import filedialog, messagebox
 import pandas as pd
 import numpy as np

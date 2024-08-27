@@ -4,7 +4,7 @@ import sys
 import os
 
 # List of required libraries
-required_libraries = ['pandas', 'scipy', 'seaborn', 'matplotlib', 'statsmodels']
+required_libraries = ['pandas', 'scipy', 'seaborn', 'matplotlib', 'statsmodels', 'openpyxl']
 
 # Check if each library is installed
 for lib in required_libraries:
