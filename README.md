@@ -14,7 +14,8 @@ Open Command Prompt or PowerShell and run:
     git clone https://github.com/ramez17khaled/StatChill.git
     ```
 3. Execute the `installation.bat` for requirment installataion
-4. Execute the `StatChill.bat`  to run the software
+4. Update the R.exe OR Rscript.exe in the statchill.bat
+5. Execute the `StatChill.bat`  to run the software
 
 ## Input
 
@@ -90,9 +91,10 @@ Select one of the following methods:
 - **sigDiff:** Analyzes differences between selected conditions (two conditions) and features. Returns a two PDF (one for lipids and onther for lipids group) with boxplot and a "*" for significant differance. 
 - **batchCorrect:** use Limma library in R for batch correction and return the PCA and boxplot for the correction. A label column is required.
 - **repartition:** to visualise the repartition of metabolite and group metabolite between conditions. Results are shown as heatmaps for each groups and bar and pie plot for metabolites.
+- **QC boxplot:** to visualise repartition of metabolites with a boxplot AND/OR histogram for QCs or any conditions in chousing in the metadata by selection the column of interrest and your conditions in this column. 
 - **Boxplot sum:** to visualise the repartition of family AND metabolite's sum a between conditions. Results are shown as boxplot for each groups in case of many samples for the same condition, and bar plot if ther only on sample for each condition.
 - **venn sum:** to visualise the detection capacity between DB and experiment detection. Results are shown as venn diagram and between DB and Experiment, and an histogram for the items in each group. DATA HAS A SPECIAL REPARTITION: tow column named ('Intital_Database' and 'Species_detected') AND MUST SKIPED THE FIRST 3 ROWS. 
-- **QC boxplot:** to visualise repartition of metabolites with a boxplot AND/OR histogram for QCs or any conditions in chousing in the metadata by selection the column of interrest and your conditions in this column. DATA HAS A SPECIAL REPARTITION: tow column named ('Intital_Database' and 'Species_detected') AND MUST SKIPED THE FIRST 3 ROWS. 
+
 
 
 ### 6. Select Column of Interest:
