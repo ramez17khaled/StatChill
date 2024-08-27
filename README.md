@@ -14,7 +14,8 @@ Open Command Prompt or PowerShell and run:
     git clone https://github.com/ramez17khaled/StatChill.git
     ```
 3. Execute the `installation.bat` for requirment installataion
-4. Execute the `StatChill.bat`  to run the software
+4. update the `R_PATH` in `StatChill.bat`
+5. Execute the `StatChill.bat`  to run the software
 
 ## Input
 
