@@ -1,7 +1,7 @@
 # pca_analysis.R
 
 # Function to install and load required packages
-open(repos = c(CRAN = "https://cloud.r-project.org"))
+options(repos = c(CRAN = "https://cloud.r-project.org"))
 # pca_analysis.R
 
 # Function to install and load required packages
