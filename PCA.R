@@ -1,6 +1,10 @@
 # pca_analysis.R
 
 # Function to install and load required packages
+open(repos = c(CRAN = "https://cloud.r-project.org"))
+# pca_analysis.R
+
+# Function to install and load required packages
 install_and_load <- function(packages) {
   for (pkg in packages) {
     if (!require(pkg, character.only = TRUE)) {
@@ -11,7 +15,7 @@ install_and_load <- function(packages) {
 }
 
 # List of required packages
-required_packages <- c("dplyr", "tidyr", "readxl", "ggplot2", "ggrepel", "rgl", "htmlwidgets")
+required_packages <- c("dplyr", "tidyr", "readxl", "ggplot2", "ggrepel")
 
 # Install and load required packages
 install_and_load(required_packages)
@@ -22,29 +26,22 @@ library(tidyr)
 library(readxl)
 library(ggplot2)
 library(ggrepel)
-library(rgl)
-library(htmlwidgets)
 
 cat("PCA Analysis: Start\n")
 
 # Function to read file based on type
 read_file <- function(file_path, sheet_name = NULL) {
-  # Check if file exists
   if (!file.exists(file_path)) {
     stop("File not found.")
   }
   
-  # Extract file extension
   file_ext <- tools::file_ext(file_path)
   
-  # Read file based on extension
   if (file_ext == "csv") {
-    # Read CSV file
     data <- read.csv(file_path, stringsAsFactors = FALSE, sep = ';')
     colnames(data) <- tolower(gsub(" ", "_", colnames(data)))
     row.names(data) <- data$sample_id 
   } else if (file_ext %in% c("xlsx", "xls")) {
-    # Read XLSX or XLS file
     if (is.null(sheet_name)) {
       stop("Sheet name must be specified for Excel files.")
     }
@@ -70,7 +67,7 @@ file_path <- trimws(config[grepl("^file_path", config$V1), "V2"])
 sheet <- trimws(config[grepl("^sheet", config$V1), "V2"])
 output_path <- trimws(config[grepl("^output_path", config$V1), "V2"])
 column <- trimws(config[grepl("^column", config$V1), "V2"])
-label_column <- trimws(config[grepl("^label_column", config$V1), "V2"])  # Added label column
+label_column <- trimws(config[grepl("^label_column", config$V1), "V2"])
 conditions <- trimws(config[grepl("^conditions", config$V1), "V2"])
 
 # Parse conditions
@@ -94,17 +91,29 @@ filtered_data <- main_data[row.names(main_data) %in% row.names(filtered_meta), ]
 # Ensure all columns in filtered_data are numeric
 filtered_data <- apply(filtered_data, 2, as.numeric)
 filtered_data_df <- as.data.frame(filtered_data)
+
 # Calculate variance for each column
 variances <- apply(filtered_data_df, 2, var)
+
 # Identify and remove columns with zero variance
 zero_variance_columns <- names(variances[variances == 0])
-filtered_data_df_cleaned  <- filtered_data_df[, variances != 0]
+
+# Check if all columns have zero variance
+if (length(zero_variance_columns) == ncol(filtered_data_df)) {
+  cat("Warning: All columns have zero variance. PCA cannot be performed.\n")
+  cat("PCA Analysis: Aborted due to zero variance in all columns.\n")
+  quit(status = 0)
+}
+
+# Remove zero variance columns
+filtered_data_df_cleaned <- filtered_data_df[, variances != 0]
 
 # Perform PCA
 pca_result <- prcomp(filtered_data_df_cleaned, scale. = TRUE)
 
-# Extract scores for the first three principal components
-pc_scores <- pca_result$x[, 1:3]
+# Extract scores for the first two principal components
+pc_scores <- as.data.frame(pca_result$x[, 1:2])
+pc_scores$condition <- filtered_meta[[column]]
 
 # Save PCA results to CSV
 pca_output_path <- file.path(output_path, "pca_results.csv")
@@ -112,38 +121,31 @@ write.csv(pc_scores, pca_output_path, row.names = TRUE)
 
 cat("PCA results saved to:", pca_output_path, "\n")
 
-# Color points based on conditions in 'column'
-filtered_conditions <- filtered_meta[[column]]
-
-# 3D scatter plot using rgl
-colors <- rainbow(length(unique(filtered_conditions)))[as.integer(factor(filtered_conditions))]
-
-# If the label column is specified, use it for annotation
+# Check if the label column exists in the metadata
 if (label_column %in% colnames(filtered_meta)) {
-  labels <- filtered_meta[[label_column]]
+  pc_scores$label <- filtered_meta[[label_column]]
 } else {
-  labels <- NULL
+  cat("Warning: Label column '", label_column, "' not found in metadata. No labels will be added to the plot.\n")
+  pc_scores$label <- NULL
 }
 
-# Open a new rgl device
-open3d()
-plot3d(pc_scores[, 1], pc_scores[, 2], pc_scores[, 3], 
-       col = colors, size = 8,  # Increase point size
-       xlab = "PC1", ylab = "PC2", zlab = "PC3",
-       main = "PCA Plot in 3D")
+# Create a 2D PCA plot
+pca_plot <- ggplot(pc_scores, aes(x = PC1, y = PC2, color = condition)) +
+  geom_point(size = 3) +
+  theme_minimal() +
+  labs(title = "PCA Plot", x = "PC1", y = "PC2") +
+  scale_color_manual(values = rainbow(length(unique(pc_scores$condition)))) +
+  theme(legend.position = "right")
 
-# Add legend
-legend3d("topright", legend = levels(factor(filtered_conditions)), pch = 16, col = rainbow(length(unique(filtered_conditions))))
-
-# Add annotations if labels are provided
-if (!is.null(labels)) {
-  text3d(pc_scores[, 1], pc_scores[, 2], pc_scores[, 3], texts = labels, adj = 1.5)
+# Add labels if they exist
+if (!is.null(pc_scores$label)) {
+  pca_plot <- pca_plot + geom_text_repel(aes(label = label), size = 3)
 }
 
-cat("PCA plot is done\n")
+# Save the PCA plot as a PNG file
+pca_plot_path <- file.path(output_path, "PCA_plot.png")
+ggsave(pca_plot_path, plot = pca_plot, width = 10, height = 8)
 
-# Display the 3D plot in R session
-rglwidget()  # Interactive plot window
-while (TRUE) {
-  Sys.sleep(60)  # Check every minute if the window is still open
-}
+cat("PCA plot saved to:", pca_plot_path, "\n")
+
+cat("PCA Analysis: Complete\n")
