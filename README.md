@@ -84,7 +84,7 @@ StatChill will isolate the Metabolite column and sample intensities for statisti
 ### 5. Statistical Method:
 
 Select one of the following methods:
-- **3D PCA:** Default method for quality control to detect batch effects or errors in feature detection. It plots selected conditions of interest on three axes (PC1, PC2, PC3).
+- **PCA:** Default method for quality control to detect batch effects or errors in feature detection. It plots selected conditions of interest on two axes (PC1, PC2).
 - **PLS-DA:** Supervised classification method. Provides a PLS-DA plot based on user-selected conditions and columns, along with a CSV and plot of the top 20 metabolites causing differences.
 - **Volcano Plot:** Suitable for a large number of detected features. It plots features showing significant differences between two conditions based on p-value and fold change.
 - **Correlation Heatmap:** Studies the correlation between metabolites in two conditions. Returns a heatmap and a CSV containing the correlation matrix.
