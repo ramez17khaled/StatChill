@@ -1,4 +1,5 @@
 # Function to install and load required packages
+options(repos = c(CRAN = "https://cloud.r-project.org"))
 install_and_load <- function(packages) {
   for (pkg in packages) {
     if (!require(pkg, character.only = TRUE)) {

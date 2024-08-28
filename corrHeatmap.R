@@ -1,4 +1,5 @@
 # Function to install and load required packages
+options(repos = c(CRAN = "https://cloud.r-project.org"))
 install_and_load <- function(packages) {
   for (pkg in packages) {
     if (!require(pkg, character.only = TRUE)) {
@@ -9,7 +10,7 @@ install_and_load <- function(packages) {
 }
 
 # List of required packages
-required_packages <- c("dplyr", "tidyr", "readxl", "ggplot2", "ggrepel", "reshape2", "heatmaply")
+required_packages <- c("dplyr", "tidyr", "readxl", "ggplot2", "ggrepel", "reshape2")
 
 cat("Process started.\n")
 
@@ -23,7 +24,6 @@ library(readxl)
 library(ggplot2)
 library(ggrepel)
 library(reshape2)
-library(heatmaply)
 
 # Print message on package loading completion
 cat("Packages loaded successfully.\n")
@@ -145,11 +145,11 @@ write.csv(correlation, file.path(output_path, "correlation_matrix.csv"), row.nam
 
 cat("Correlation matrix is generated and saved successfully.\n")
 
-# Generate heatmap
+# Generate heatmap using base R's heatmap function
 png(file = file.path(output_path, "corrHeatmap.png"))
-heatmap(correlation, xlab = paste("Condition", config_conditions[1]), ylab = paste("Condition", config_conditions[2]),
+heatmap(correlation, col = colorRampPalette(c("#eeff00", "white", "#fa6501"))(100), 
+        xlab = "Conditions", ylab = "Conditions", 
         scale = "none", main = "Correlation Heatmap", symm = TRUE, margins = c(8, 8))
 dev.off()
 
 cat("Analysis completed.\n")
-
