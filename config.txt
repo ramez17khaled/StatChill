@@ -1,8 +1,0 @@
-meta_file_path=PATH/to/your/metadata.csv
-file_path=PATH/to/your/data.xlsx OR .csv
-sheet=<Page name> in case on data.xlsx format
-output_path=PATH/to/your/output directory
-method=<selecte a method>
-column=<selecte a column in metadata>
-label_column=<selecte a label column in metadata>
-conditions=selecte conditions <C1,C2,C3,...>
