@@ -1,0 +1,37 @@
+sample_ID;claSs;injection order;batch;CondiTion;type
+240326JSO_QCdil02;QCDil;1;b1;QCDil;QCDil2
+240326JSO_QCdil04;QCDil;2;b1;QCDil;QCDil4
+240326JSO_QC01;QC;3;b1;QC;QC 1
+240326NCE_Global01;sample;4;b2;H;B27
+240326NCE_Global02;sample;5;b2;C1;istd
+240326NCE_Global03;sample;6;b2;C2;B6
+240326NCE_Global04;sample;7;b2;T;B13
+240326NCE_Global05;sample;8;b2;H;B29
+240326NCE_Global06;sample;9;b2;C1;B22
+240326NCE_Global07;sample;10;b2;C2;B9
+240326NCE_Global08;sample;11;b2;C1;B25
+240326NCE_Global09;sample;12;b2;T;B14
+240326NCE_Global10;sample;13;b2;C2;B2
+240326JSO_QC01is;QC;14;b2;QC;QC2
+240326NCE_Global11;sample;15;b3;T;B11
+240326NCE_Global12;sample;16;b3;H;B26
+240326NCE_Global13;sample;17;b3;T;B19
+240326NCE_Global14;sample;18;b3;T;B18
+240326NCE_Global15;sample;19;b3;C2;B8
+240326NCE_Global16;sample;20;b3;T;B15
+240326NCE_Global17;sample;21;b3;T;B17
+240326NCE_Global18;sample;22;b3;H;B30
+240326NCE_Global19;sample;23;b3;C2;B3
+240326NCE_Global20;sample;24;b3;C2;B4
+240326JSO_QC02;QC;25;b3;QC;QC3
+240326NCE_Global21;sample;26;b4;C2;B10
+240326NCE_Global22;sample;27;b4;C2;B1
+240326NCE_Global23;sample;28;b4;T;B20
+240326NCE_Global24;sample;29;b4;C2;B5
+240326NCE_Global25;sample;30;b4;C1;B21
+240326NCE_Global26;sample;31;b4;T;B12
+240326NCE_Global27;sample;32;b4;T;B16
+240326NCE_Global28;sample;33;b4;C2;B7
+240326NCE_Global29;sample;34;b4;C1;B23
+240326NCE_Global30;sample;35;b4;H;blank
+240326JSO_QC02is;QC;36;b4;QC;QC4
