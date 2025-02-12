@@ -4,7 +4,7 @@ import sys
 import os
 
 # List of required libraries
-required_libraries = ['tkinter', 'pandas', 'numpy', 'scikit-learn', 'matplotlib']
+required_libraries = ['tkinter', 'pandas', 'numpy', 'scikit-learn', 'matplotlib', 'openpyxl']
 
 # Check if each library is installed
 for lib in required_libraries:
@@ -15,6 +15,7 @@ for lib in required_libraries:
 
 # Now import the required libraries
 import tkinter as tk
+import openpyxl
 from tkinter import filedialog, messagebox
 import pandas as pd
 import numpy as np
@@ -44,14 +45,14 @@ def main(meta_file_path, file_path, sheet, output_path, column, conditions):
     print("Loading main data...")
     if file_path.endswith(('.xlsx', '.xls')):
         ThermoData = pd.read_excel(file_path, sheet_name=sheet)
-        ThermoData = ThermoData.drop(ThermoData.columns[[0, 1]], axis=1)
+        ThermoData = ThermoData.drop(ThermoData.columns[[0, 2, 3]], axis=1)
         ThermoData.columns = [col.replace(' ', '_') for col in ThermoData.columns]
         ThermoData.set_index(ThermoData.columns[0], inplace=True)
         ThermoData = ThermoData.T
         ThermoData.index.name = 'sample_id'
     elif file_path.endswith('.csv'):
         ThermoData = pd.read_csv(file_path, sep=';')
-        ThermoData = ThermoData.drop(ThermoData.columns[[0, 1]], axis=1)
+        ThermoData = ThermoData.drop(ThermoData.columns[[0, 2, 3]], axis=1)
         ThermoData.columns = [col.replace(' ', '_') for col in ThermoData.columns]
         ThermoData.set_index(ThermoData.columns[0], inplace=True)
         ThermoData = ThermoData.T

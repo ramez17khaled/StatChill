@@ -4,7 +4,7 @@ import sys
 import os
 
 # List of required libraries
-required_libraries = ['pandas', 'scipy', 'seaborn', 'matplotlib', 'statsmodels']
+required_libraries = ['pandas', 'scipy', 'seaborn', 'matplotlib', 'statsmodels', 'openpyxl']
 
 # Check if each library is installed
 for lib in required_libraries:
@@ -41,13 +41,13 @@ def main(meta_file_path, file_path, sheet, output_path, column, conditions, hue_
     print("Loading main data...")
     if file_path.endswith(('.xlsx', '.xls')):
         ThermoData = pd.read_excel(file_path, sheet_name=sheet)
-        ThermoData = ThermoData.drop(ThermoData.columns[[1, 2]], axis=1)
+        ThermoData = ThermoData.drop(ThermoData.columns[[1, 2, 3]], axis=1)
         ThermoData = ThermoData.groupby(ThermoData.columns[0]).mean()
         ThermoData = ThermoData.T
         ThermoData.index.name = 'sample_id'
     elif file_path.endswith('.csv'):
         ThermoData = pd.read_csv(file_path, sep=';')
-        ThermoData = ThermoData.drop(ThermoData.columns[[1, 2]], axis=1)
+        ThermoData = ThermoData.drop(ThermoData.columns[[1, 2, 3]], axis=1)
         ThermoData = ThermoData.groupby(ThermoData.columns[0]).mean()
         ThermoData = ThermoData.T
         ThermoData.index.name = 'sample_id'

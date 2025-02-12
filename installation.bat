@@ -1,65 +1,81 @@
 @echo off
 setlocal
 
-REM Check if Python is installed
+REM Function to check and install Python
+:CheckInstallPython
 python --version >nul 2>&1
 if %errorlevel% neq 0 (
-    echo Python is not installed. Installing Python...
-    REM Download and install Python from the official website or an appropriate source
-    REM Example for downloading Python from the official website
-    REM Modify this path as per your requirement
-    start /wait "" msiexec.exe /i https://www.python.org/ftp/python/3.9.5/python-3.9.5-amd64.exe /quiet InstallAllUsers=1 PrependPath=1
+    echo Python is not installed. Attempting to install Python...
+    
+    REM Download Python installer
+    echo Downloading Python installer...
+    curl -o python-installer.exe https://www.python.org/ftp/python/3.9.5/python-3.9.5-amd64.exe
+    if %errorlevel% neq 0 (
+        echo Failed to download Python installer. Continuing with R installation...
+    ) else (
+        REM Install Python
+        echo Installing Python...
+        start /wait python-installer.exe /quiet InstallAllUsers=1 PrependPath=1
+        if %errorlevel% neq 0 (
+            echo Failed to install Python. Continuing with R installation...
+        )
+    )
 ) else (
     echo Python is already installed.
 )
 
-REM Check if Python was successfully installed
+REM Verify Python installation
 python --version >nul 2>&1
 if %errorlevel% neq 0 (
-    echo Failed to install Python. Exiting.
-    exit /b 1
+    echo Python installation was not successful, but continuing with R installation...
 )
 
-echo Python installation successful.
+echo Python installation check complete.
+
+REM Function to check and install R
+:CheckInstallR
+set "R_INSTALL_PATH=C:\Program Files\R\R-4.1.3"
+set "R_INSTALL_EXE=R-4.1.3-win.exe"
 
 REM Check if R is installed
-"C:\Program Files\R\R-4.3.1\bin\Rscript.exe" --version >nul 2>&1
-if %errorlevel% neq 0 (
-    echo R is not installed. Installing R...
+if exist "%R_INSTALL_PATH%\bin\Rscript.exe" (
+    echo R is already installed at "%R_INSTALL_PATH%". Updating statchill.bat to use this version...
 
-    REM Fetch the latest version number using PowerShell
-    for /f "delims=" %%i in ('powershell -NoProfile -Command "(Invoke-WebRequest -Uri 'https://cran.r-project.org/bin/windows/base/').Links.href | Select-String -Pattern 'R-[0-9]+\.[0-9]+\.[0-9]+-win\.exe' | Sort-Object -Descending | Select-Object -First 1"') do set "LATEST_VERSION=%%i"
+    REM Modify statchill.bat to use the found R installation path
+    set "bat2_file=statchill.bat"
+    set "search=C:\Program Files\R\R-4.1.3\bin\Rscript.exe"
+    set "replace=%R_INSTALL_PATH%\bin\Rscript.exe"
     
-    REM Extract the version from the URL
-    for /f "tokens=1,2 delims=R-" %%a in ("%LATEST_VERSION%") do set "VERSION=%%b"
+    REM Use PowerShell to update the file
+    powershell -Command "(Get-Content -path '%bat2_file%') -replace [regex]::escape('%search%'), '%replace%' | Set-Content -path '%bat2_file%'"
     
-    REM Construct the full URL
-    set "URL=https://cran.r-project.org/bin/windows/base/R-%VERSION%"
-
-    REM Download the file
-    set OUTPUT=R-%VERSION%
-    curl -o %OUTPUT% %URL%
-
-    REM Check if the download was successful
-    if %errorlevel% neq 0 (
-        echo Download failed!
-        exit /b %errorlevel%
-    )
-
-    REM Install R
-    start /wait "" %OUTPUT% /SILENT
-
-) else (
-    echo R is already installed.
+    echo R installation check complete.
+    goto :End
 )
 
-REM Check if R was successfully installed
-"C:\Program Files\R\R-4.3.1\bin\Rscript.exe" --version >nul 2>&1
+echo R is not installed. Installing R-4.1.3...
+
+REM Download R-4.1.3 installer
+echo Downloading R-4.1.3 installer...
+curl -o %R_INSTALL_EXE% https://cran.r-project.org/bin/windows/base/old/4.1.3/%R_INSTALL_EXE%
 if %errorlevel% neq 0 (
-    echo Failed to install R. Exiting.
+    echo Failed to download R-4.1.3. Exiting.
     exit /b 1
 )
 
-echo R installation successful.
+REM Install R-4.1.3
+echo Installing R-4.1.3...
+start /wait %R_INSTALL_EXE% /SILENT
+
+REM Verify R installation
+if not exist "%R_INSTALL_PATH%\bin\Rscript.exe" (
+    echo Failed to install R-4.1.3. Exiting.
+    exit /b 1
+)
+
+echo R-4.1.3 installation successful.
+echo R is installed at "%R_INSTALL_PATH%".
+
+:End
 endlocal
 pause

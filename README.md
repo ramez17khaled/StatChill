@@ -14,7 +14,8 @@ Open Command Prompt or PowerShell and run:
     git clone https://github.com/ramez17khaled/StatChill.git
     ```
 3. Execute the `installation.bat` for requirment installataion
-4. Execute the `StatChill.bat`  to run the software
+4. update the `R_PATH` in `StatChill.bat`
+5. Execute the `StatChill.bat`  to run the software
 
 ## Input
 
@@ -40,14 +41,33 @@ Open Command Prompt or PowerShell and run:
   - Metabolite column in the third position.
   - Sample intensities start from the sixth column.
 
-**Example Dataset:**
+**Example Dataset (generale):**
 
-| Family | ISTD | Metabolite name| Samples       |
-|--------|------|----------------|---------------|
-| f1     | istd | met1           | Intensities   |
-| f1     | istd | met2           | Intensities   |
-|        |      |Sum OR Somme    |Values of sum  | (only in case of boxplot sum method)
-| f2     | istd | met3           | Intensities   |
+| Family | Metabolite name| MZ | RT | Samples       |
+|--------|----------------|----|----|---------------|
+| f1     | met1           |    |    | Intensities   |
+| f1     | met2           |    |    | Intensities   |
+| f2     | met3           |    |    | Intensities   |
+
+**Example Dataset (for sum functions):**
+
+| Family |ISTD| Metabolite name | Samples       |
+|--------|----|-----------------|---------------|
+| f1     | i1 | met1            | Intensities   |
+| f1     | i1 | met2            | Intensities   |
+|        | i2 |Sum OR Somme     | Values of sum |
+| f2     | i3 | met3            | Intensities   |
+
+**Example Dataset (for venn functions):**
+
+SKIPE THE FIRST 3 ROWS
+
+| Intital Database |Species detected|
+|------------------|----------------|
+| metabolite 1     | metabolite 1   |
+| metabolite 2     | metabolite 2   |
+| metabolite 3     | metabolite 3   |
+| metabolite 4     | metabolite 4   |
 
 StatChill will isolate the Metabolite column and sample intensities for statistical analysis.
 (Sum or Somme rows is only in case of boxplot sum method)
@@ -64,14 +84,17 @@ StatChill will isolate the Metabolite column and sample intensities for statisti
 ### 5. Statistical Method:
 
 Select one of the following methods:
-- **3D PCA:** Default method for quality control to detect batch effects or errors in feature detection. It plots selected conditions of interest on three axes (PC1, PC2, PC3).
+- **PCA:** Default method for quality control to detect batch effects or errors in feature detection. It plots selected conditions of interest on two axes (PC1, PC2).
 - **PLS-DA:** Supervised classification method. Provides a PLS-DA plot based on user-selected conditions and columns, along with a CSV and plot of the top 20 metabolites causing differences.
 - **Volcano Plot:** Suitable for a large number of detected features. It plots features showing significant differences between two conditions based on p-value and fold change.
 - **Correlation Heatmap:** Studies the correlation between metabolites in two conditions. Returns a heatmap and a CSV containing the correlation matrix.
 - **sigDiff:** Analyzes differences between selected conditions (two conditions) and features. Returns a two PDF (one for lipids and onther for lipids group) with boxplot and a "*" for significant differance. 
 - **batchCorrect:** use Limma library in R for batch correction and return the PCA and boxplot for the correction. A label column is required.
 - **repartition:** to visualise the repartition of metabolite and group metabolite between conditions. Results are shown as heatmaps for each groups and bar and pie plot for metabolites.
-- **Boxplot sum:** to visualise the repartition of falily's sum a between conditions. Results are shown as boxplot for each groups in case of many samples for the same condition, and bar plot if ther only on sample for each condition.
+- **QC boxplot:** to visualise repartition of metabolites with a boxplot AND/OR histogram for QCs or any conditions in chousing in the metadata by selection the column of interrest and your conditions in this column. 
+- **Boxplot sum:** to visualise the repartition of family AND metabolite's sum a between conditions. Results are shown as boxplot for each groups in case of many samples for the same condition, and bar plot if ther only on sample for each condition.
+- **venn sum:** to visualise the detection capacity between DB and experiment detection. Results are shown as venn diagram and between DB and Experiment, and an histogram for the items in each group. DATA HAS A SPECIAL REPARTITION: tow column named ('Intital_Database' and 'Species_detected') AND MUST SKIPED THE FIRST 3 ROWS. 
+
 
 
 ### 6. Select Column of Interest:
